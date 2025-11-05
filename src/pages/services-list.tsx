@@ -1,5 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { ChevronRight, Clock, Tag } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 const services = [
   {
@@ -8,6 +9,8 @@ const services = [
     name: "Corte de Cabelo",
     timeUsed: 30,
     price: 40,
+    description:
+      "Corte clássico ou moderno, ajustado ao seu estilo e formato de rosto. Inclui finalização com produto de alta qualidade.",
   },
   {
     imageURL:
@@ -15,6 +18,8 @@ const services = [
     name: "Barba Completa",
     timeUsed: 20,
     price: 20,
+    description:
+      "Aparar, desenhar e hidratar a barba, com toalha quente e produtos premium.",
   },
   {
     imageURL:
@@ -26,47 +31,73 @@ const services = [
 ];
 
 export default function ServicesList() {
+  const [expanded, setExpanded] = useState<number | null>(null);
+
   return (
-    <main className="min-h-screen bg-zinc-900 text-white py-10 px-6">
+    <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-semibold text-center mb-8">
           Escolha o seu serviço
         </h1>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <Card
-              key={index}
-              className="overflow-hidden bg-zinc-300 flex flex-row"
-            >
-              <div className="relative w-20 overflow-hidden shrink-0">
-                <img
-                  src={service.imageURL}
-                  alt={service.name}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <CardContent className="flex-1 py-2">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle className="text-lg font-semibold leading-tight">
-                      {service.name}
-                    </CardTitle>
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
-                      <Clock className="w-4 h-4" />
-                      {service.timeUsed} min
+          {services.map((service, index) => {
+            const isExpanded = expanded === index;
+            const maxLength = 80;
+            const description =
+              service.description &&
+              service.description.length > maxLength &&
+              !isExpanded
+                ? service.description.slice(0, maxLength) + "..."
+                : service.description;
+
+            return (
+              <Card
+                key={index}
+                className="overflow-hidden bg-zinc-800 border-zinc-700 flex flex-col transition hover:shadow-lg hover:scale-[1.02]"
+              >
+                <div className="relative w-full h-32 overflow-hidden">
+                  <img
+                    src={service.imageURL}
+                    alt={service.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+
+                <CardContent className="flex flex-col py-4 px-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg font-semibold leading-tight text-white">
+                        {service.name}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 text-gray-400 text-sm mt-1">
+                        {service.timeUsed} min {" • "}R$
+                        {service.price.toFixed(2).replace(".", ",")}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 text-gray-500 text-sm ">
-                      <Tag className="w-4 h-4" />
-                      R$ {service.price.toFixed(2).replace(".", ",")}
-                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400 mt-1" />
                   </div>
 
-                  <ChevronRight className="w-5 h-5 text-gray-500" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  {description && (
+                    <p className="text-gray-300 text-sm mt-3 leading-snug">
+                      {description}
+                      {service.description &&
+                        service.description.length > maxLength && (
+                          <button
+                            onClick={() =>
+                              setExpanded(isExpanded ? null : index)
+                            }
+                            className="text-blue-400 ml-1 hover:underline"
+                          >
+                            {isExpanded ? "ver menos" : "ver mais"}
+                          </button>
+                        )}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </main>

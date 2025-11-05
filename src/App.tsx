@@ -1,24 +1,46 @@
-import { ArrowUpIcon } from "lucide-react";
-import { useState } from "react";
-import { Button } from "./components/ui/button";
+import { Navigate, Route, Routes } from "react-router-dom";
+import BottomBar from "./components/bottom-bar";
+import ProtectedRoute from "./components/protected-route";
+import SecurityView from "./components/security-view";
+import { useIsMobile } from "./lib/use-mobile";
+import AppointmentHistoric from "./pages/historic";
+import Login from "./pages/login";
+import ServicesList from "./pages/services-list";
+import UserBarberCode from "./pages/user-barber-code";
 
-function App() {
-  const [count, setCount] = useState(0);
+export default function App() {
+  const isMobile = useIsMobile();
+
+  const shouldHideBottomBar = () => {
+    const path = location.pathname;
+    return path.startsWith("/findbarber");
+  };
+
+  const hideBottomBar = shouldHideBottomBar();
 
   return (
-    <>
-      <p className="read-the-docs text-4xl">
-        Click on the Vite and React logos to learn more
-      </p>
+    <SecurityView>
+      <Routes>
+        <Route path="/findbarber" element={<UserBarberCode />} />
+        <Route path="/login" element={<Login />} />
 
-      <div className="flex flex-wrap items-center gap-2 md:flex-row">
-        <Button variant="outline">Button</Button>
-        <Button variant="outline" size="icon" aria-label="Submit">
-          <ArrowUpIcon />
-        </Button>
-      </div>
-    </>
+        {/* Rota protegida */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <div>Aqui fica os protegidos</div>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<ServicesList />} />
+        <Route path="/services" element={<ServicesList />} />
+        <Route path="/newappointment" element={<ServicesList />} />
+        <Route path="/appointments" element={<AppointmentHistoric />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {isMobile && !hideBottomBar && <BottomBar />}
+    </SecurityView>
   );
 }
-
-export default App;
