@@ -30,16 +30,12 @@ const services = [
   },
 ];
 
-export default function ServicesList() {
+export default function ServicesList({ onNext }: { onNext: () => void }) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
     <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-semibold text-center mb-8">
-          Escolha o seu serviço
-        </h1>
-
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => {
             const isExpanded = expanded === index;
@@ -53,8 +49,9 @@ export default function ServicesList() {
 
             return (
               <Card
+                onClick={onNext}
                 key={index}
-                className="overflow-hidden bg-zinc-800 border-zinc-700 flex flex-col transition hover:shadow-lg hover:scale-[1.02]"
+                className="cursor-pointer overflow-hidden bg-zinc-800 border-zinc-700 flex flex-col transition hover:shadow-lg hover:scale-[1.02]"
               >
                 <div className="relative w-full h-32 overflow-hidden">
                   <img

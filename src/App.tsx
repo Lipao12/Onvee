@@ -5,7 +5,7 @@ import SecurityView from "./components/security-view";
 import { useIsMobile } from "./lib/use-mobile";
 import AppointmentHistoric from "./pages/historic";
 import Login from "./pages/login";
-import ServicesList from "./pages/services-list";
+import MakeAppointment from "./pages/make-appointment";
 import UserBarberCode from "./pages/user-barber-code";
 
 export default function App() {
@@ -33,9 +33,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<ServicesList />} />
-        <Route path="/services" element={<ServicesList />} />
-        <Route path="/newappointment" element={<ServicesList />} />
+        <Route path="/" element={<MakeAppointment />} />
+        <Route path="/services" element={<MakeAppointment />} />
+        <Route path="/newappointment" element={<MakeAppointment />} />
         <Route path="/appointments" element={<AppointmentHistoric />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
