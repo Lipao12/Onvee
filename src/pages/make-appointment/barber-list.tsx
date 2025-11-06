@@ -26,7 +26,7 @@ export default function BarbersList({
   onNext,
   onBack,
 }: {
-  onNext: () => void;
+  onNext: (selectedBarber: any) => void;
   onBack: () => void;
 }) {
   return (
@@ -38,7 +38,7 @@ export default function BarbersList({
               <Card
                 key={index}
                 className="overflow-hidden bg-zinc-300 flex flex-row cursor-pointer"
-                onClick={onNext}
+                onClick={() => onNext(barber)}
               >
                 {" "}
                 <div className="relative w-20 overflow-hidden shrink-0">

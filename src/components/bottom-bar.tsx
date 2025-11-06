@@ -29,9 +29,9 @@ export default function BottomBar() {
       className={`fixed z-50 transform duration-500 backdrop-blur-md ${
         isIOS
           ? "rounded-3xl bottom-3 left-4 right-4"
-          : "rounded-t-2xl bottom-0 left-0 right-0"
+          : "bottom-0 left-0 right-0" //rounded-t-2xl
       } 
-      border-t border-white/10 bg-zinc-900/70 h-20
+      border-t dark:border-white/10 dark:bg-zinc-900/70 bg-white/70 border-black/15 h-20
        
         `}
     >
@@ -43,7 +43,7 @@ export default function BottomBar() {
               ? location.pathname === "/" || location.pathname === "/home"
               : location.pathname === tab.path;
 
-          const activeColor = "text-blue-300";
+          const activeColor = "text-blue-600 dark:text-blue-300";
           const activeGlow =
             "shadow-[0_0_8px_rgba(96,165,250,0.8)] bg-blue-500/20 border border-blue-400/30";
 
@@ -58,7 +58,7 @@ export default function BottomBar() {
               <div
                 className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
                   isActive || tab.name === "Sair"
-                    ? "bg-linear-to-br from-blue-300/50 to-transparent"
+                    ? "bg-linear-to-br from-blue-600/50 dark:from-blue-300/50 to-transparent"
                     : ""
                 }
                 `}

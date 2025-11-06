@@ -1,13 +1,14 @@
+import { ClientAppointmentContext } from "@/context/client-appoitment-provider";
 import { motion } from "framer-motion";
 import {
   Calendar,
   CheckCheck,
   PartyPopper,
   Scissors,
-  Sparkle,
+  User,
   type LucideIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import BarbersList from "./barber-list";
 import BookingSuccess from "./booking-sucess";
 import CalendarList from "./calendar-list";
@@ -23,18 +24,21 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { id: 1, title: "O que vai fazer hoje?", Icon: Sparkle },
-  { id: 2, title: "Escolha seu barbeiro", Icon: Scissors },
+  { id: 1, title: "O que vai fazer hoje?", Icon: Scissors },
+  { id: 2, title: "Escolha seu barbeiro", Icon: User },
   { id: 3, title: "Qual o melhor horário para você?", Icon: Calendar },
   { id: 4, title: "Confirmar agendamento", Icon: CheckCheck },
   { id: 5, title: "Corte marcado!", Icon: PartyPopper },
-  // Adicione mais passos aqui no futuro
 ];
 
 const TOTAL_STEPS = STEPS.length;
 
 export default function MakeAppointment() {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const clientAppointment = useContext(ClientAppointmentContext);
+  const { service, barber, date, setService, setBarber, setDate } =
+    clientAppointment;
 
   // Navegação segura
   const goToNext = useCallback(() => {
@@ -45,6 +49,23 @@ export default function MakeAppointment() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   }, []);
 
+  // Handlers para salvar as escolhas do usuário
+  const handleSelectService = (selectedService: string) => {
+    setService(selectedService);
+    goToNext();
+  };
+
+  const handleSelectBarber = (selectedBarber: string) => {
+    setBarber(selectedBarber);
+    goToNext();
+  };
+
+  const handleSelectDate = (selectedDate: Date) => {
+    setDate(selectedDate);
+    setCurrentStep(4);
+    //goToNext();
+  };
+
   const currentStepData = STEPS[currentStep - 1];
 
   return (
@@ -53,7 +74,7 @@ export default function MakeAppointment() {
       role="region"
       aria-labelledby="appointment-title"
     >
-      <header className="p-4 border-b border-zinc-800">
+      <header className="p-4 border-b border-zinc-300 dark:border-zinc-800 transition-colors duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 id="appointment-title" className="text-lg font-semibold">
@@ -92,8 +113,8 @@ export default function MakeAppointment() {
                       isCurrent
                         ? "bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
                         : isActive
-                        ? "bg-blue-700"
-                        : "bg-zinc-700"
+                        ? "bg-blue-600"
+                        : "dark:bg-zinc-700 bg-zinc-400"
                     }`}
                   />
                   {<step.Icon className="h-4 w-4 mt-1" />}
@@ -105,13 +126,16 @@ export default function MakeAppointment() {
       </header>
 
       <main className="flex-1 overflow-y-auto p-4">
-        {currentStep === 1 && <ServicesList onNext={goToNext} />}
+        {currentStep === 1 && <ServicesList onNext={handleSelectService} />}
         {currentStep === 2 && (
-          <BarbersList onNext={goToNext} onBack={goToPrev} />
+          <BarbersList onNext={handleSelectBarber} onBack={goToPrev} />
         )}
-        {currentStep === 3 && <CalendarList onNext={() => setCurrentStep(4)} />}
+        {currentStep === 3 && <CalendarList onNext={handleSelectDate} />}
         {currentStep === 4 && (
-          <ConfirmBooking onNext={() => setCurrentStep(STEPS.length)} />
+          <ConfirmBooking
+            onNext={() => setCurrentStep(STEPS.length)}
+            info={{ barber: barber, service: service, date: date }}
+          />
         )}
         {currentStep === 5 && <BookingSuccess />}
       </main>

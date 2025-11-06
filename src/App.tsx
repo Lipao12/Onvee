@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import BottomBar from "./components/bottom-bar";
+import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
-import SecurityView from "./components/security-view";
 import { useIsMobile } from "./lib/use-mobile";
 import AppointmentHistoric from "./pages/historic";
 import Login from "./pages/login";
@@ -19,7 +19,8 @@ export default function App() {
   const hideBottomBar = shouldHideBottomBar();
 
   return (
-    <SecurityView>
+    <div>
+      {isMobile && !hideBottomBar && <Header />}
       <Routes>
         <Route path="/findbarber" element={<UserBarberCode />} />
         <Route path="/login" element={<Login />} />
@@ -33,7 +34,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<MakeAppointment />} />
+
+        <Route path="/" element={<UserBarberCode />} />
         <Route path="/services" element={<MakeAppointment />} />
         <Route path="/newappointment" element={<MakeAppointment />} />
         <Route path="/appointments" element={<AppointmentHistoric />} />
@@ -41,6 +43,6 @@ export default function App() {
       </Routes>
 
       {isMobile && !hideBottomBar && <BottomBar />}
-    </SecurityView>
+    </div>
   );
 }

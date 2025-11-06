@@ -30,7 +30,11 @@ const services = [
   },
 ];
 
-export default function ServicesList({ onNext }: { onNext: () => void }) {
+export default function ServicesList({
+  onNext,
+}: {
+  onNext: (selectedService: any) => void;
+}) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
@@ -49,9 +53,9 @@ export default function ServicesList({ onNext }: { onNext: () => void }) {
 
             return (
               <Card
-                onClick={onNext}
+                onClick={() => onNext(service)}
                 key={index}
-                className="cursor-pointer overflow-hidden bg-zinc-800 border-zinc-700 flex flex-col transition hover:shadow-lg hover:scale-[1.02]"
+                className="cursor-pointer overflow-hidden bg-zinc-800 flex flex-col transition hover:shadow-lg"
               >
                 <div className="relative w-full h-32 overflow-hidden">
                   <img
@@ -81,9 +85,10 @@ export default function ServicesList({ onNext }: { onNext: () => void }) {
                       {service.description &&
                         service.description.length > maxLength && (
                           <button
-                            onClick={() =>
-                              setExpanded(isExpanded ? null : index)
-                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpanded(isExpanded ? null : index);
+                            }}
                             className="text-blue-400 ml-1 hover:underline"
                           >
                             {isExpanded ? "ver menos" : "ver mais"}

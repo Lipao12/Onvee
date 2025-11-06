@@ -11,7 +11,7 @@ export default function SecurityView({
 
   return (
     <div
-      className="min-h-screen bg-zinc-900 text-white flex flex-col"
+      className="min-h-screen bg-white dark:bg-zinc-900 transition-colors duration-300 dark:text-white text-zinc-800 flex flex-col"
       style={{
         paddingTop: top,
         paddingBottom: bottom,
