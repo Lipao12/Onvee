@@ -77,7 +77,7 @@ export default function MakeAppointment() {
       <header className="p-4 border-b border-zinc-300 dark:border-zinc-800 transition-colors duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 id="appointment-title" className="text-lg font-semibold">
+            <h2 id="appointment-title" className="text-2xl font-semibold">
               {currentStepData.title}
             </h2>
           </div>
