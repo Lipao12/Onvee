@@ -44,8 +44,8 @@ export default function BottomBar() {
               : location.pathname === tab.path;
 
           const activeColor = "text-blue-600 dark:text-blue-300";
-          const activeGlow =
-            "shadow-[0_0_8px_rgba(96,165,250,0.8)] bg-blue-500/20 border border-blue-400/30";
+          /*const activeGlow =
+            "shadow-[0_0_8px_rgba(96,165,250,0.8)] bg-blue-500/20 border border-blue-400/30";*/
 
           return (
             <button
