@@ -33,7 +33,7 @@ export default function ClientHomePage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col justify-center items-center space-y-8">
+    <div className="flex flex-1 flex-col justify-center items-center space-y-8 pb-24">
       <div className="relative">
         <img
           src={shop?.image_url ?? "/placeholder-barber.jpg"}
