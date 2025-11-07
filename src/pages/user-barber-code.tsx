@@ -88,7 +88,7 @@ export default function UserBarberCode() {
               <Button
                 variant="outline"
                 onClick={() => setIsScanning(true)}
-                className="text-md h-12 text-gray-800"
+                className="text-md h-12 text-gray-800 bg-neutral-100"
               >
                 <ScanQrCode className="h-4 w-4 text-gray-800" /> Escanear QR
                 Code

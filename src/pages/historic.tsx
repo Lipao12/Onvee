@@ -149,7 +149,7 @@ export default function AppointmentHistoric() {
           return (
             <Card
               key={ag.id}
-              className="flex mx-2 justify-between items-center p-4 border-none shadow-none"
+              className="flex mx-2 justify-between items-center p-4 border-none shadow-none  dark:bg-neutral-900 bg-neutral-100"
             >
               <CardContent className="flex flex-row sm:flex-row justify-between items-center w-full gap-4 p-0">
                 <div>
