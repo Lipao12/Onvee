@@ -1,24 +1,26 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { fetchAllAppointments } from "@/lib/appointments";
+import { useEffect, useState } from "react";
 type AppointmentStatus = "completed" | "scheduled";
 
 interface Appointment {
   id: string;
-  barber_shop: {
-    id: number;
+  barbershops: {
+    id: string;
     name: string;
   };
-  barber: {
-    id: number;
+  barbers: {
+    id: string;
+    full_name: string;
+  };
+  services: {
+    id: string;
     name: string;
   };
-  service: {
-    id: number;
-    name: string;
-  };
-  date: string;
+  start_time: string;
   status: AppointmentStatus;
 }
-const agendamentos: Appointment[] = [
+/*const agendamentos: Appointment[] = [
   {
     id: "1",
     barber_shop: {
@@ -87,7 +89,7 @@ const agendamentos: Appointment[] = [
     date: "2025-11-12T14:00:00",
     status: "scheduled",
   },
-];
+];*/
 
 const STATUS_DICT: { completed: string; scheduled: string } = {
   completed: "FINALIZADO",
@@ -95,6 +97,28 @@ const STATUS_DICT: { completed: string; scheduled: string } = {
 };
 
 export default function AppointmentHistoric() {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAppointments = async () => {
+      const clientId = "b9a92b64-XXXX-XXXX-XXXX-XXXXXXXX"; // substitua pelo ID real
+      setLoading(true);
+      try {
+        const res = await fetchAllAppointments(clientId);
+        setAppointments(res);
+      } catch (err) {
+        console.error("Erro ao buscar agendamentos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAppointments();
+  }, []);
+
+  if (loading) return <p className="p-4">Carregando...</p>;
+
   return (
     <div className="flex flex-col items-start justify-center space-y-6 w-full">
       {/* Header */}
@@ -112,8 +136,8 @@ export default function AppointmentHistoric() {
       </header>
 
       <div className="w-full space-y-4">
-        {agendamentos.map((ag) => {
-          const date = new Date(ag.date);
+        {appointments.map((ag) => {
+          const date = new Date(ag.start_time);
 
           const dia = date.toLocaleDateString("pt-BR", { day: "2-digit" });
           const mes = date.toLocaleDateString("pt-BR", { month: "long" });
@@ -140,9 +164,9 @@ export default function AppointmentHistoric() {
                     {STATUS_DICT[ag.status] || ag.status.toUpperCase()}
                   </span>
                   <div className="flex flex-col flex-1 text-left">
-                    <h3 className="text-lg font-medium">{ag.service.name}</h3>
+                    <h3 className="text-lg font-medium">{ag.services.name}</h3>
                     <p className="text-sm text-gray-500">
-                      {ag.barber_shop.name} • {ag.barber.name}
+                      {ag.barbershops.name} • {ag.barbers.full_name}
                     </p>
                   </div>
                 </div>

@@ -54,7 +54,18 @@ create table public.breaks (
   updated_at timestamptz default now()
 );
 
-
+create table public.appointments (
+  id uuid primary key default gen_random_uuid(),
+  barber_id uuid references barbers(id) on delete cascade,
+  barbershop_id uuid references barbershops(id) on delete cascade,
+  service_id uuid references services(id) on delete set null,
+  client_id references client(id) on delete cascade,
+  start_time timestamptz not null,
+  end_time timestamptz not null,
+  status text check (status in ('scheduled', 'completed', 'cancelled')) default 'scheduled',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
 
 -- Trigger para atualizar automaticamente o campo updated_at
 create or replace function update_updated_at_column()

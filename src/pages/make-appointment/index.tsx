@@ -1,5 +1,6 @@
 import { useBarberShop } from "@/context/barber-shop-provider";
 import { ClientAppointmentContext } from "@/context/client-appoitment-provider";
+import { createAppointment } from "@/lib/appointments";
 import type { Barber } from "@/types/barber";
 import type { Service } from "@/types/service";
 import { motion } from "framer-motion";
@@ -26,6 +27,11 @@ interface Step {
   title: string;
   Icon: LucideIcon;
   description?: string;
+}
+
+interface TimeSlot {
+  start: Date;
+  end: Date;
 }
 
 const STEPS: Step[] = [
@@ -56,7 +62,7 @@ export default function MakeAppointment() {
       "MakeAppointment must be used within a ClientAppointmentProvider"
     );
   }
-  const { service, barber, date, setService, setBarber, setDate } =
+  const { service, barber, slotDate, setService, setBarber, setSlotDate } =
     clientAppointment;
 
   // Navegação segura
@@ -79,10 +85,27 @@ export default function MakeAppointment() {
     goToNext();
   };
 
-  const handleSelectDate = (selectedDate: Date) => {
-    setDate(selectedDate);
+  const handleSelectDate = (selectedDate: TimeSlot) => {
+    setSlotDate(selectedDate);
     //setCurrentStep(4);
     goToNext();
+  };
+
+  const handleCreatingAppointment = async () => {
+    const appointmentInfo = {
+      barber_id: barber?.id,
+      barbershop_id: shopId,
+      service_id: service?.id,
+      start_time: slotDate.start.toISOString(),
+      end_time: slotDate.end.toISOString(),
+      status: "completed" as const,
+    };
+    try {
+      await createAppointment(appointmentInfo);
+      goToNext();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const currentStepData = STEPS[currentStep - 1];
@@ -163,8 +186,8 @@ export default function MakeAppointment() {
         )}
         {currentStep === 4 && (
           <ConfirmBooking
-            onNext={() => setCurrentStep(STEPS.length)}
-            info={{ barber: barber, service: service, date: date }}
+            onNext={handleCreatingAppointment}
+            info={{ barber: barber, service: service, date: slotDate.start }}
           />
         )}
         {currentStep === 5 && <BookingSuccess />}

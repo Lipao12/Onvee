@@ -5,10 +5,15 @@ import { createContext, useState, type ReactNode } from "react";
 interface ClientAppointmentContextType {
   service: Service | null;
   barber: Barber | null;
-  date: Date;
+  slotDate: TimeSlot;
   setService: (service: Service) => void;
   setBarber: (barber: Barber) => void;
-  setDate: (date: Date) => void;
+  setSlotDate: (slotDate: TimeSlot) => void;
+}
+
+interface TimeSlot {
+  start: Date;
+  end: Date;
 }
 
 export const ClientAppointmentContext = createContext<
@@ -22,17 +27,20 @@ export function ClientAppointmentProvider({
 }) {
   const [service, setService] = useState<Service | null>(null);
   const [barber, setBarber] = useState<Barber | null>(null);
-  const [date, setDate] = useState(new Date());
+  const [slotDate, setSlotDate] = useState<TimeSlot>({
+    start: new Date(),
+    end: new Date(),
+  });
 
   return (
     <ClientAppointmentContext.Provider
       value={{
         service,
         barber,
-        date,
+        slotDate,
         setService,
         setBarber,
-        setDate,
+        setSlotDate,
       }}
     >
       {children}

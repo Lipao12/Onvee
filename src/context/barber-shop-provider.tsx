@@ -156,17 +156,15 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         if (breaksError) throw breaksError;
 
         // 3. (Opcional) Buscar agendamentos confirmados
-        // const { data: appointments, error: apptError } = await supabase
-        //   .from("appointments")
-        //   .select("start_time, end_time")
-        //   .eq("barber_id", barberId)
-        //   .eq("status", "confirmed")
-        //   .gte("start_time", `${dateString}T00:00:00`)
-        //   .lte("end_time", `${dateString}T23:59:59`);
-        //
-        // if (apptError) throw apptError;
+        const { data: appointments, error: apptError } = await supabase
+          .from("appointments")
+          .select("start_time, end_time")
+          .eq("barber_id", barberId)
+          .eq("status", "confirmed")
+          .gte("start_time", `${dateString}T00:00:00`)
+          .lte("end_time", `${dateString}T23:59:59`);
 
-        const appointments: any[] = []; // Remova quando ativar a query acima
+        if (apptError) throw apptError;
 
         // 4. Função auxiliar: verifica conflito com intervalo (break ou appointment)
         const hasConflict = (

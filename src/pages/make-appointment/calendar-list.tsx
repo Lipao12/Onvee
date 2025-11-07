@@ -20,11 +20,16 @@ interface AvailableSlot {
   barberName: string;
 }
 
+interface TimeSlot {
+  start: Date;
+  end: Date;
+}
+
 export default function CalendarList({
   onNext,
   serviceDuration = 30,
 }: {
-  onNext: (selectedDate: Date) => void;
+  onNext: (selectedDate: TimeSlot) => void;
   onBack: () => void;
   serviceDuration: number;
   barberId: string;
@@ -116,7 +121,7 @@ export default function CalendarList({
         })
       );*/
       onNext(
-        selectedSlot.start
+        selectedSlot
         /*selectedSlot.start.toLocaleTimeString("pt-BR", {
           hour: "2-digit",
           minute: "2-digit",
