@@ -2,7 +2,13 @@ import { useTheme } from "@/context/theme-provider";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 
-export default function Header({ title }: { title?: string }) {
+export default function Header({
+  title,
+  logo_url,
+}: {
+  title?: string;
+  logo_url?: string;
+}) {
   //const [isDark, setIsDark] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
@@ -26,9 +32,20 @@ export default function Header({ title }: { title?: string }) {
 
   return (
     <header className="w-full flex items-center justify-between px-5 py-3  bg-transparent transition-colors duration-300">
-      <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-        {title || "BarberApp"}
-      </h1>
+      <div className="flex items-center gap-3">
+        {logo_url ? (
+          <img
+            src={logo_url}
+            alt={`${title} logo`}
+            className="h-8 w-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600" />
+        )}
+        <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+          {title || "BarberApp"}
+        </h1>
+      </div>
 
       <div className="flex items-center gap-2">
         {/* Botão de alternar tema */}

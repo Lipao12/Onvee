@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import BottomBar from "./components/bottom-bar";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
+import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
 import AppointmentHistoric from "./pages/historic";
 import Login from "./pages/login";
@@ -23,9 +24,19 @@ export default function App() {
 
   const hideBottomBar = shouldHideBottomBar();
 
+  const clientAppointment = useBarberShop();
+  if (!clientAppointment) {
+    throw new Error(
+      "MakeAppointment must be used within a ClientAppointmentProvider"
+    );
+  }
+  const { shop } = clientAppointment;
+
   return (
     <div>
-      {isMobile && !hideBottomBar && <Header />}
+      {isMobile && !hideBottomBar && (
+        <Header title={shop?.name} logo_url={shop?.image_url as string} />
+      )}
       <Routes>
         <Route path="/findbarber" element={<UserBarberCode />} />
         <Route path="/login" element={<Login />} />
