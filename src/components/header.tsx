@@ -37,7 +37,7 @@ export default function Header({
           <img
             src={logo_url}
             alt={`${title} logo`}
-            className="h-8 w-8 rounded-full object-cover"
+            className="h-10 w-10 rounded-full object-cover"
           />
         ) : (
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600" />
