@@ -25,7 +25,7 @@ export async function createAppointment(appointmentData:Partial<Appointment>){
 }
 
 type AppointmentStatus = "completed" | "scheduled";
-interface AppointmentEnd {
+export interface AppointmentEnd {
   id: string;
   barbershops: {
     id: string;
@@ -74,7 +74,6 @@ export async function fetchAllAppointments(client_id: string) {
     }
     
     const normalized: AppointmentEnd[] = data.map((appt: any) => {
-console.log(appt.barbers[0])
         return {
             id: String(appt.id),
             start_time: appt.start_time,
