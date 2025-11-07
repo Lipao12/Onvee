@@ -4,7 +4,9 @@ import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
+import Dashboard from "./pages/barber/dashboard";
 import AppointmentHistoric from "./pages/historic";
+import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
 import MakeAppointment from "./pages/make-appointment";
 import UserBarberCode from "./pages/user-barber-code";
@@ -46,12 +48,13 @@ export default function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <div>Aqui fica os protegidos</div>
+              <Dashboard />
             </ProtectedRoute>
           }
         />
 
         <Route path="/" element={<UserBarberCode />} />
+        <Route path="/home" element={<ClientHomePage />} />
         <Route path="/services" element={<MakeAppointment />} />
         <Route path="/newappointment" element={<MakeAppointment />} />
         <Route path="/appointments" element={<AppointmentHistoric />} />

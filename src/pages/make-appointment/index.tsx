@@ -12,7 +12,7 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import LoadingPage from "../loading";
 import BarbersList from "./barber-list";
@@ -51,10 +51,7 @@ export default function MakeAppointment() {
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const { loading, fetchShopData } = useBarberShop();
-  useEffect(() => {
-    fetchShopData(shopId);
-  }, [shopId]);
+  const { loading } = useBarberShop();
 
   const clientAppointment = useContext(ClientAppointmentContext);
   if (!clientAppointment) {

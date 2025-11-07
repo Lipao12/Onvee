@@ -51,7 +51,7 @@ export default function UserBarberCode() {
       setShop(data);
 
       // Navega para a página de serviços da barbearia
-      navigator(`/newappointment?shop=${data.id}`);
+      navigator(`/home?shop=${data.id}`);
     } catch (err) {
       console.error(err);
       alert("Ocorreu um erro ao verificar o código.");

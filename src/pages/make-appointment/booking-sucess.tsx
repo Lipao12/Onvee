@@ -9,7 +9,9 @@ export default function BookingSuccess() {
       <p className="text-gray-400">
         Você receberá uma notificação por e-mail e WhatsApp.
       </p>
-      <Button>Fazer novo Agendamento</Button>
+      <Button className="h-12  px-8 text-base font-medium">
+        Fazer novo Agendamento
+      </Button>
     </div>
   );
 }

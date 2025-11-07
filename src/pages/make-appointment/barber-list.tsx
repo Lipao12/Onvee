@@ -41,7 +41,7 @@ export default function BarbersList({
               <Card
                 key={barber.id}
                 onClick={() => onNext(barber)}
-                className="flex flex-row items-center cursor-pointer bg-zinc-50 dark:bg-zinc-800 
+                className="flex flex-row items-center cursor-pointer dark:bg-neutral-900 bg-neutral-100 
                 transition-colors shadow-sm overflow-hidden"
               >
                 {/* Imagem ou fallback */}

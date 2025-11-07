@@ -33,7 +33,7 @@ export default function Login() {
         });
         if (error) throw error;
       }
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -42,7 +42,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 mx-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-semibold">

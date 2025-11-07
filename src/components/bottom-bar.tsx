@@ -1,4 +1,5 @@
-import { Calendar, LogOut, Plus } from "lucide-react";
+import { supabase } from "@/lib/supabase-client";
+import { Calendar, HomeIcon, Plus } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BottomBar() {
@@ -9,19 +10,20 @@ export default function BottomBar() {
   const handleNavigate = async (path: string) => {
     if (path === "/logout") {
       handleLogout();
-      return;
+      navigate("/");
     }
     navigate(path);
   };
 
   const tabs = [
-    { name: "Home", icon: Plus, path: "/newappointment" },
+    { name: "Home", icon: HomeIcon, path: "/home" },
+    { name: "Reserva", icon: Plus, path: "/newappointment" },
     { name: "Histórico", icon: Calendar, path: "/appointments" },
-    { name: "Sair", icon: LogOut, path: "/logout" },
+    //{ name: "Sair", icon: LogOut, path: "/logout" },
   ];
 
   const handleLogout = async () => {
-    console.log("LOgOut");
+    supabase.auth.signOut();
   };
 
   return (
