@@ -24,15 +24,6 @@ export async function createAppointment(appointmentData:Partial<Appointment>){
   return data;
 }
 
-type SupabaseAppointment = {
-  id: string;
-  start_time: string;
-  end_time: string;
-  status: string;
-  barbers: { id: string; full_name: string };
-  barbershops: { id: string; name: string };
-  services: { id: string; name: string };
-};
 type AppointmentStatus = "completed" | "scheduled";
 interface AppointmentEnd {
   id: string;
