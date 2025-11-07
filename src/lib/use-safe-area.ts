@@ -9,7 +9,7 @@ export function useSafeAreaInsets() {
     const isAndroid = /Android/.test(userAgent);
 
     if (isIOS) {
-      setInsets({ top: 44, bottom: 24 }); 
+      setInsets({ top: 44, bottom: 4 }); 
     } else if (isAndroid) {
       setInsets({ top: 0, bottom: 16 });
     } else {
