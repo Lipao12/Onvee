@@ -98,7 +98,7 @@ export default function MakeAppointment() {
       service_id: service?.id,
       start_time: slotDate.start.toISOString(),
       end_time: slotDate.end.toISOString(),
-      status: "completed" as const,
+      status: "scheduled" as const,
     };
     try {
       await createAppointment(appointmentInfo);

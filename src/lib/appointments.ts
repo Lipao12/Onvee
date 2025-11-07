@@ -67,19 +67,27 @@ export async function fetchAllAppointments(client_id: string) {
     //.eq("client_id", client_id)
     .order("start_time", { ascending: false });
 
-    console.log(data)
-
-  if (error) {
-    console.error("Erro ao buscar agendamentos:", error.message);
-    throw new Error(error.message);
+    
+    if (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+        throw new Error(error.message);
+    }
+    
+    const normalized: AppointmentEnd[] = data.map((appt: any) => {
+console.log(appt.barbers[0])
+        return {
+            id: String(appt.id),
+            start_time: appt.start_time,
+            end_time: appt.end_time,
+            status: appt.status as AppointmentStatus,
+            barbers: appt.barbers ? appt.barbers ?? { id: "", full_name: "Desconhecido" } : { id: "", full_name: "Desconhecido" },
+            barbershops: appt.barbershops ? appt.barbershops ?? { id: "", name: "Não informado" } : { id: "", name: "Não informado" },
+            services: appt.services ? appt.services ?? { id: "", name: "Serviço não informado" } : { id: "", name: "Serviço não informado" },
+        }
   }
-
-  const normalized: AppointmentEnd[] = (data).map((appt) => ({
-    ...appt,
-    barbers: appt.barbers[0],         // ← remove array
-    barbershops: appt.barbershops[0], // ← remove array
-    services: appt.services[0],       // ← remove array
-  }));
-
+);
+    
+    console.log("Data: ", data)
+    console.log("Normalized:", normalized);
   return normalized;
 }

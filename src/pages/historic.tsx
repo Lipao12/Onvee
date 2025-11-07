@@ -120,7 +120,7 @@ export default function AppointmentHistoric() {
   if (loading) return <p className="p-4">Carregando...</p>;
 
   return (
-    <div className="flex flex-col items-start justify-center space-y-6 w-full">
+    <div className="flex flex-col pb-20 items-start justify-center space-y-6 w-full">
       {/* Header */}
       <header className="w-full p-4 border-b border-zinc-300 dark:border-zinc-800 transition-colors duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
