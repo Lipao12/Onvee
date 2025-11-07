@@ -1,5 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { ChevronRight } from "lucide-react";
+import { useBarberShop } from "@/context/barber-shop-provider";
+import { ChevronRight, User } from "lucide-react";
 
 const barbers = [
   {
@@ -29,40 +30,48 @@ export default function BarbersList({
   onNext: (selectedBarber: any) => void;
   onBack: () => void;
 }) {
+  const { barbers } = useBarberShop();
+
+  console.log(barbers[0]);
   return (
     <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {barbers.map((barber, index) => {
             return (
               <Card
-                key={index}
-                className="overflow-hidden bg-zinc-300 flex flex-row cursor-pointer"
+                key={barber.id}
                 onClick={() => onNext(barber)}
+                className="flex flex-row items-center cursor-pointer bg-zinc-50 dark:bg-zinc-800 
+                transition-colors shadow-sm overflow-hidden"
               >
-                {" "}
-                <div className="relative w-20 overflow-hidden shrink-0">
-                  {" "}
-                  <img
-                    src={barber.imageURL}
-                    alt={barber.name}
-                    className="object-cover w-full h-full"
-                  />{" "}
-                </div>{" "}
-                <CardContent className="flex-1 py-2 items-center flex">
-                  {" "}
-                  <div className="flex grow justify-between items-center">
-                    {" "}
-                    <div>
-                      {" "}
-                      <CardTitle className="text-lg font-semibold leading-tight">
-                        {" "}
-                        {barber.name}{" "}
-                      </CardTitle>{" "}
-                    </div>{" "}
-                    <ChevronRight className="w-5 h-5 text-gray-500" />{" "}
-                  </div>{" "}
-                </CardContent>{" "}
+                {/* Imagem ou fallback */}
+                <div className="relative w-20 h-20 flex items-center justify-center shrink-0">
+                  {barber.image_url ? (
+                    <img
+                      src={barber.image_url}
+                      alt={barber.full_name}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <User className="text-zinc-500 w-8 h-8" />
+                  )}
+                </div>
+
+                <CardContent className="flex flex-1 flex-col py-3 px-4 justify-center">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-base font-semibold ">
+                      {barber.full_name}
+                    </CardTitle>
+                    <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  </div>
+
+                  {barber.bio && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">
+                      {barber.bio}
+                    </p>
+                  )}
+                </CardContent>
               </Card>
             );
           })}

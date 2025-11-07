@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/lib/supabase-client";
 import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
@@ -11,16 +12,41 @@ export default function UserBarberCode() {
   const [barberCode, setBarberCode] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [qrResult, setQrResult] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigator = useNavigate();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const code = qrResult || barberCode;
     if (!code) {
       alert("Por favor, insira ou escaneie o código da barbearia.");
       return;
     }
-    console.log("Código enviado:", code);
-    navigator("/services");
+    setLoading(true);
+
+    try {
+      // 🔍 Busca a barbearia pelo código
+      const { data, error } = await supabase
+        .from("barbershops")
+        .select("*")
+        .eq("access_code", code)
+        .single();
+
+      if (error || !data) {
+        alert("Código inválido. Verifique e tente novamente.");
+        console.error(error);
+        return;
+      }
+
+      localStorage.setItem("barbershop_id", data.id);
+
+      // Navega para a página de serviços da barbearia
+      navigator(`/newappointment?shop=${data.id}`);
+    } catch (err) {
+      console.error(err);
+      alert("Ocorreu um erro ao verificar o código.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

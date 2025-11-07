@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Barber } from "@/types/barber";
+import type { Service } from "@/types/service";
 import { CalendarDays, Scissors, User } from "lucide-react";
 
 interface ConfirmBookingProps {
   onNext: () => void;
   info: {
-    barber: { name: string };
-    service: { name: string };
+    barber: Barber | null;
+    service: Service | null;
     date: Date;
   };
 }
@@ -23,7 +25,7 @@ export default function ConfirmBooking({ onNext, info }: ConfirmBookingProps) {
                 Serviço
               </p>
               <p className="font-medium text-gray-900 dark:text-zinc-300">
-                {info.service.name}
+                {info.service?.name}
               </p>
             </div>
           </div>
@@ -35,7 +37,7 @@ export default function ConfirmBooking({ onNext, info }: ConfirmBookingProps) {
                 Barbeiro
               </p>
               <p className="font-medium text-gray-900 dark:text-zinc-300">
-                {info.barber.name}
+                {info.barber?.full_name}
               </p>
             </div>
           </div>

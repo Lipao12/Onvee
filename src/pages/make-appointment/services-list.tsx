@@ -1,8 +1,9 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { useBarberShop } from "@/context/barber-shop-provider";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-const services = [
+const services_teste = [
   {
     imageURL:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAGWgf1qLuUpgOEV7_XDnclIEgs1rhnYFa-n-b04dVpIgCSq9hGSoYgVkVzbvMTnnt_k-ayxyQDYRZkC2cQZaI1RY9MkMXqPx8IheIpuzLCFWM0bkDoIRvzsCm7ILvw-GjZaLpdN9bY1-cFTsM3IHPaZ3IBsdYQwOfjFcCs2ql9SiBDnvbKc39zZMRxHCWS8f4scOutBJx9r8BXxoZHIsp8oaIq7Ahdy1GkLcrdFEk1AcYsv6NPor2vkQA4XohM3wKRf0KuWlNFCsKS",
@@ -37,6 +38,8 @@ export default function ServicesList({
 }) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
+  const { services } = useBarberShop();
+
   return (
     <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">
@@ -59,7 +62,7 @@ export default function ServicesList({
               >
                 <div className="relative w-full h-32 overflow-hidden">
                   <img
-                    src={service.imageURL}
+                    src={service.image_url || ""}
                     alt={service.name}
                     className="object-cover w-full h-full"
                   />
@@ -72,7 +75,7 @@ export default function ServicesList({
                         {service.name}
                       </CardTitle>
                       <div className="flex items-center gap-2 text-gray-400 text-sm mt-1">
-                        {service.timeUsed} min {" • "}R$
+                        {service.duration_minutes} min {" • "}R$
                         {service.price.toFixed(2).replace(".", ",")}
                       </div>
                     </div>

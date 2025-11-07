@@ -1,11 +1,13 @@
+import type { Barber } from "@/types/barber";
+import type { Service } from "@/types/service";
 import { createContext, useState, type ReactNode } from "react";
 
 interface ClientAppointmentContextType {
-  service: string;
-  barber: string;
+  service: Service | null;
+  barber: Barber | null;
   date: Date;
-  setService: (service: string) => void;
-  setBarber: (barber: string) => void;
+  setService: (service: Service) => void;
+  setBarber: (barber: Barber) => void;
   setDate: (date: Date) => void;
 }
 
@@ -18,8 +20,8 @@ export function ClientAppointmentProvider({
 }: {
   children: ReactNode;
 }) {
-  const [service, setService] = useState("");
-  const [barber, setBarber] = useState("");
+  const [service, setService] = useState<Service | null>(null);
+  const [barber, setBarber] = useState<Barber | null>(null);
   const [date, setDate] = useState(new Date());
 
   return (

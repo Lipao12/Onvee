@@ -1,4 +1,7 @@
+import { useBarberShop } from "@/context/barber-shop-provider";
 import { ClientAppointmentContext } from "@/context/client-appoitment-provider";
+import type { Barber } from "@/types/barber";
+import type { Service } from "@/types/service";
 import { motion } from "framer-motion";
 import {
   Calendar,
@@ -8,7 +11,9 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import LoadingPage from "../loading";
 import BarbersList from "./barber-list";
 import BookingSuccess from "./booking-sucess";
 import CalendarList from "./calendar-list";
@@ -27,16 +32,30 @@ const STEPS: Step[] = [
   { id: 1, title: "O que vai fazer hoje?", Icon: Scissors },
   { id: 2, title: "Escolha seu barbeiro", Icon: User },
   { id: 3, title: "Qual o melhor horário para você?", Icon: Calendar },
-  { id: 4, title: "Confirmar agendamento", Icon: CheckCheck },
+  { id: 4, title: "Verifique se está tudo certo", Icon: CheckCheck },
   { id: 5, title: "Corte marcado!", Icon: PartyPopper },
 ];
 
 const TOTAL_STEPS = STEPS.length;
 
 export default function MakeAppointment() {
+  const [serachParams] = useSearchParams();
+  const shopId =
+    serachParams.get("shop") || localStorage.getItem("barbershop_id");
+
   const [currentStep, setCurrentStep] = useState(1);
 
+  const { loading, fetchShopData } = useBarberShop();
+  useEffect(() => {
+    fetchShopData(shopId);
+  }, [shopId]);
+
   const clientAppointment = useContext(ClientAppointmentContext);
+  if (!clientAppointment) {
+    throw new Error(
+      "MakeAppointment must be used within a ClientAppointmentProvider"
+    );
+  }
   const { service, barber, date, setService, setBarber, setDate } =
     clientAppointment;
 
@@ -50,23 +69,27 @@ export default function MakeAppointment() {
   }, []);
 
   // Handlers para salvar as escolhas do usuário
-  const handleSelectService = (selectedService: string) => {
+  const handleSelectService = (selectedService: Service) => {
     setService(selectedService);
     goToNext();
   };
 
-  const handleSelectBarber = (selectedBarber: string) => {
+  const handleSelectBarber = (selectedBarber: Barber) => {
     setBarber(selectedBarber);
     goToNext();
   };
 
   const handleSelectDate = (selectedDate: Date) => {
     setDate(selectedDate);
-    setCurrentStep(4);
-    //goToNext();
+    //setCurrentStep(4);
+    goToNext();
   };
 
   const currentStepData = STEPS[currentStep - 1];
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div
@@ -130,7 +153,14 @@ export default function MakeAppointment() {
         {currentStep === 2 && (
           <BarbersList onNext={handleSelectBarber} onBack={goToPrev} />
         )}
-        {currentStep === 3 && <CalendarList onNext={handleSelectDate} />}
+        {currentStep === 3 && (
+          <CalendarList
+            onNext={handleSelectDate}
+            onBack={() => {}}
+            barberId={barber ? barber.id : ""}
+            serviceDuration={service ? service.duration_minutes : 30}
+          />
+        )}
         {currentStep === 4 && (
           <ConfirmBooking
             onNext={() => setCurrentStep(STEPS.length)}
