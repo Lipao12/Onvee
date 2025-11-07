@@ -161,7 +161,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
           .from("appointments")
           .select("start_time, end_time")
           .eq("barber_id", barberId)
-          .eq("status", "confirmed")
+          .neq("status", "cancelled")
           .gte("start_time", `${dateString}T00:00:00`)
           .lte("end_time", `${dateString}T23:59:59`);
 

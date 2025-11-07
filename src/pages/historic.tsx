@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { fetchAllAppointments } from "@/lib/appointments";
 import { useEffect, useState } from "react";
+import LoadingPage from "./loading";
 type AppointmentStatus = "completed" | "scheduled";
 
 interface Appointment {
@@ -117,7 +118,7 @@ export default function AppointmentHistoric() {
     loadAppointments();
   }, []);
 
-  if (loading) return <p className="p-4">Carregando...</p>;
+  if (loading) return <LoadingPage />;
 
   return (
     <div className="flex flex-col pb-20 items-start justify-center space-y-6 w-full">
