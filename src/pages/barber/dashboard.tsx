@@ -12,14 +12,14 @@ type Stat = {
   clients: number;
 };
 
-type Appointment = {
+/*type Appointment = {
   id: string;
   start_time: string;
   end_time: string;
   status: string;
   barbers: { full_name: string };
   services: { name: string };
-};
+};*/
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stat | null>(null);
