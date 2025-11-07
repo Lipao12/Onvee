@@ -75,7 +75,7 @@ export default function UserBarberCode() {
 
             <Button
               onClick={handleSubmit}
-              className="h-12 text-md bg-emerald-600 hover:bg-emerald-700"
+              className="h-12 text-md bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               {loading ? "Carregando..." : "Entrar"}
             </Button>
@@ -90,7 +90,8 @@ export default function UserBarberCode() {
                 onClick={() => setIsScanning(true)}
                 className="text-md h-12 text-gray-800"
               >
-                <ScanQrCode className="h-4 w-4" /> Escanear QR Code
+                <ScanQrCode className="h-4 w-4 text-gray-800" /> Escanear QR
+                Code
               </Button>
             ) : (
               <div className="relative">

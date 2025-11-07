@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import BottomBar from "./components/bottom-bar";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
@@ -10,6 +10,7 @@ import UserBarberCode from "./pages/user-barber-code";
 
 export default function App() {
   const isMobile = useIsMobile();
+  const location = useLocation();
 
   const shouldHideBottomBar = () => {
     const path = location.pathname;
