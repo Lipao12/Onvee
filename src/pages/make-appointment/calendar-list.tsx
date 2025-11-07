@@ -112,7 +112,6 @@ export default function CalendarList({
 
   const handleConfirm = () => {
     if (selectedSlot) {
-      console.log("Slote escolhido:", selectedSlot);
       /*setDate(selectedSlot.start);
       setTime(
         selectedSlot.start.toLocaleTimeString("pt-BR", {

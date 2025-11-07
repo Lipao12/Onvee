@@ -237,7 +237,6 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         // Ordena por horário de início
         availableSlots.sort((a, b) => a.start.getTime() - b.start.getTime());
 
-        console.log(availableSlots);
 
         return availableSlots;
       } catch (err) {

@@ -85,8 +85,6 @@ export async function fetchAllAppointments(client_id: string) {
         }
   }
 );
-    
-    console.log("Data: ", data)
-    console.log("Normalized:", normalized);
+
   return normalized;
 }

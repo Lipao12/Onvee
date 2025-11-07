@@ -31,7 +31,6 @@ export default function BarbersList({
 }) {
   const { barbers } = useBarberShop();
 
-  console.log(barbers[0]);
   return (
     <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">

@@ -23,8 +23,6 @@ export default function ClientHomePage() {
   }
   const { shop } = clientAppointment;
   const navigator = useNavigate();
-  console.log("instagram:", shop?.instagram_url);
-  console.log("Shop: ", shop);
 
   const goTo = (path: string) => {
     navigator(path);
@@ -62,7 +60,9 @@ export default function ClientHomePage() {
           className="mt-6 w-full max-w-xs  gap-2 group"
           onClick={() =>
             window.open(
-              shop.instagram_url ? shop.instagram_url : "instagram.com",
+              shop.instagram_url
+                ? "https://" + shop.instagram_url
+                : "https://instagram.com",
               "_blank"
             )
           }
