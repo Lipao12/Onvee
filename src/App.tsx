@@ -13,7 +13,11 @@ export default function App() {
 
   const shouldHideBottomBar = () => {
     const path = location.pathname;
-    return path.startsWith("/findbarber") || path.startsWith("/login");
+    return (
+      path.startsWith("/findbarber") ||
+      path.startsWith("/login") ||
+      path === "/"
+    );
   };
 
   const hideBottomBar = shouldHideBottomBar();

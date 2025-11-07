@@ -22,8 +22,6 @@ interface AvailableSlot {
 
 export default function CalendarList({
   onNext,
-  onBack,
-  barberId,
   serviceDuration = 30,
 }: {
   onNext: (selectedDate: Date) => void;
@@ -31,14 +29,14 @@ export default function CalendarList({
   serviceDuration: number;
   barberId: string;
 }) {
-  const { services, fetchBarberAvailability } = useBarberShop();
+  const { fetchBarberAvailability } = useBarberShop();
   const clientAppointment = useContext(ClientAppointmentContext);
   if (!clientAppointment) {
     throw new Error(
       "MakeAppointment must be used within a ClientAppointmentProvider"
     );
   }
-  const { service, barber, setDate } = clientAppointment;
+  const { service, barber } = clientAppointment;
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
@@ -127,12 +125,6 @@ export default function CalendarList({
     }
   };
 
-  const formatDateDisplay = (date: Date) => {
-    if (isToday(date)) return "Hoje";
-    if (isTomorrow(date)) return "Amanhã";
-    return format(date, "EEEE, d 'de' MMMM", { locale: ptBR });
-  };
-
   // Agrupar slots por barbeiro
   const slotsByBarber = availableSlots.reduce((acc, slot) => {
     if (!acc[slot.barberName]) acc[slot.barberName] = [];
@@ -210,7 +202,7 @@ export default function CalendarList({
                 {Object.entries(slotsByBarber).map(([barberName, slots]) => (
                   <div key={barber?.full_name} className="space-y-3">
                     <h3 className="font-semibold text-lg">
-                      {barber?.full_name}
+                      {barberName ? barberName : barber?.full_name}
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {slots.map((slot, index) => (

@@ -1,0 +1,7 @@
+.barber-code-background {
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 80%),
+    url("https://lh3.googleusercontent.com/aida-public/AB6AXuB7x-KqXXNibarHCluoFDePPAG42c6bRzrW0_HsAICi8npp9vUYzCgyRQJg9N4CSUHcdmW680lguzKVlmMxatFlUwHbEYRW8XXRj5Zbd_q0CbacUA2eM9JNCz5R5vBQa6_PYF7xhbRPXbnHXK1LQrBVg4XlEYlivgqhP8vWB7CZsYv4eG_ohfvT33CY_HfsUv0ym4v3Qs_OlEv3mYT7r1KGQ_IvY0-DnhlZ1qTSclMeSy43_dNAjkNLRZG4HmuKe1ln0IcyPBD_O-ai");
+  background-size: cover;
+  background-position: center;
+}

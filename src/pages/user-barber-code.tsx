@@ -7,6 +7,7 @@ import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
+import "../barber-code.css";
 
 export default function UserBarberCode() {
   const [barberCode, setBarberCode] = useState("");
@@ -50,17 +51,7 @@ export default function UserBarberCode() {
   };
 
   return (
-    <div
-      className="relative min-h-screen flex items-end justify-center bg-gray-900 p-6"
-      style={{
-        backgroundImage: `
-          linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 80%),
-          url("https://lh3.googleusercontent.com/aida-public/AB6AXuB7x-KqXXNibarHCluoFDePPAG42c6bRzrW0_HsAICi8npp9vUYzCgyRQJg9N4CSUHcdmW680lguzKVlmMxatFlUwHbEYRW8XXRj5Zbd_q0CbacUA2eM9JNCz5R5vBQa6_PYF7xhbRPXbnHXK1LQrBVg4XlEYlivgqhP8vWB7CZsYv4eG_ohfvT33CY_HfsUv0ym4v3Qs_OlEv3mYT7r1KGQ_IvY0-DnhlZ1qTSclMeSy43_dNAjkNLRZG4HmuKe1ln0IcyPBD_O-ai")
-        `,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="barber-code-background relative min-h-screen flex items-end justify-center bg-gray-900 p-6">
       <Card className="w-full max-w-md mb-10 shadow-xl border-none bg-transparent text-white">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-semibold">
@@ -86,7 +77,7 @@ export default function UserBarberCode() {
               onClick={handleSubmit}
               className="h-12 text-md bg-emerald-600 hover:bg-emerald-700"
             >
-              Entrar
+              {loading ? "Carregando..." : "Entrar"}
             </Button>
 
             <p className="text-gray-300 text-sm font-normal leading-normal py-2 text-center">

@@ -2,7 +2,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { useBarberShop } from "@/context/barber-shop-provider";
 import { ChevronRight, User } from "lucide-react";
 
-const barbers = [
+/*const barbers = [
   {
     id: "1",
     imageURL:
@@ -21,11 +21,10 @@ const barbers = [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAFKdjjmHu_Bq7_pB35CIk5wNBo4L3esEp4h6VbjpVydWuJXRb3UhyDMNQ-ohmpglWU4Vrq2huMvoT-QMk7Hki9W6c-ot7Cczkrk-L3c98XoM6lPolpfxaqRVHfptne-fXuvh0dM2844BIHnfTiUMg3SyfkKVXhqUDo1pYJ9BF_v4Z-L_cn1qtIiu3kXuF5JnC0zxiaWm-LGZr6SvKuG189T_bo7CWcnvrJPeE6trz7i_VWjXqOy-3RWeYtR2ZU3Bkn6VZN-K8SUl-5",
     name: "José",
   },
-];
+];*/
 
 export default function BarbersList({
   onNext,
-  onBack,
 }: {
   onNext: (selectedBarber: any) => void;
   onBack: () => void;
@@ -37,7 +36,7 @@ export default function BarbersList({
     <main className="pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {barbers.map((barber, index) => {
+          {barbers.map((barber) => {
             return (
               <Card
                 key={barber.id}

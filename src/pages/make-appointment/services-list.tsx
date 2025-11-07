@@ -3,7 +3,7 @@ import { useBarberShop } from "@/context/barber-shop-provider";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-const services_teste = [
+/*const services_teste = [
   {
     imageURL:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAGWgf1qLuUpgOEV7_XDnclIEgs1rhnYFa-n-b04dVpIgCSq9hGSoYgVkVzbvMTnnt_k-ayxyQDYRZkC2cQZaI1RY9MkMXqPx8IheIpuzLCFWM0bkDoIRvzsCm7ILvw-GjZaLpdN9bY1-cFTsM3IHPaZ3IBsdYQwOfjFcCs2ql9SiBDnvbKc39zZMRxHCWS8f4scOutBJx9r8BXxoZHIsp8oaIq7Ahdy1GkLcrdFEk1AcYsv6NPor2vkQA4XohM3wKRf0KuWlNFCsKS",
@@ -29,7 +29,7 @@ const services_teste = [
     timeUsed: 50,
     price: 40,
   },
-];
+];*/
 
 export default function ServicesList({
   onNext,
