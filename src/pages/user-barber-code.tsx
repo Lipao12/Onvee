@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useBarberShop } from "@/context/barber-shop-provider";
 import { supabase } from "@/lib/supabase-client";
 import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
@@ -15,6 +16,14 @@ export default function UserBarberCode() {
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigate();
+
+  const clientAppointment = useBarberShop();
+  if (!clientAppointment) {
+    throw new Error(
+      "MakeAppointment must be used within a ClientAppointmentProvider"
+    );
+  }
+  const { setShop } = clientAppointment;
 
   const handleSubmit = async () => {
     const code = qrResult || barberCode;
@@ -39,6 +48,7 @@ export default function UserBarberCode() {
       }
 
       localStorage.setItem("barbershop_id", data.id);
+      setShop(data);
 
       // Navega para a página de serviços da barbearia
       navigator(`/newappointment?shop=${data.id}`);

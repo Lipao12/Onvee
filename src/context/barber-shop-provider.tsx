@@ -25,6 +25,7 @@ interface BarberShopContextProps {
   barbers: Barber[];
   loading: boolean;
   error: string | null;
+  setShop: (shop: BarberShop) => void;
   fetchShopData: (shopId: ShopId) => void;
   fetchBarberAvailability: any;
 }
@@ -255,6 +256,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         services,
         loading,
         error,
+        setShop,
         fetchShopData,
         fetchBarberAvailability,
       }}
