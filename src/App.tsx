@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import BottomBar from "./components/bottom-bar";
+import { useDynamicFavicon } from "./components/dynamic-favicon";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
@@ -33,6 +34,8 @@ export default function App() {
     );
   }
   const { shop } = clientAppointment;
+
+  useDynamicFavicon(shop?.image_url as string);
 
   return (
     <div>
