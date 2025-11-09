@@ -5,6 +5,7 @@ import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
+import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
 import AppointmentHistoric from "./pages/historic";
 import ClientHomePage from "./pages/home";
@@ -55,12 +56,13 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route element={<AppLayout />}>
+          <Route path="/home" element={<ClientHomePage />} />
+          <Route path="/services" element={<MakeAppointment />} />
+          <Route path="/newappointment" element={<MakeAppointment />} />
+          <Route path="/appointments" element={<AppointmentHistoric />} />
+        </Route>
         <Route path="/" element={<UserBarberCode />} />
-        <Route path="/home" element={<ClientHomePage />} />
-        <Route path="/services" element={<MakeAppointment />} />
-        <Route path="/newappointment" element={<MakeAppointment />} />
-        <Route path="/appointments" element={<AppointmentHistoric />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

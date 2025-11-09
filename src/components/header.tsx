@@ -1,6 +1,7 @@
 import { useTheme } from "@/context/theme-provider";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export default function Header({
   title,
@@ -40,11 +41,15 @@ export default function Header({
             className="h-10 w-10 rounded-full object-cover"
           />
         ) : (
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600" />
+          <Skeleton className="h-8 w-8 rounded-full" />
         )}
-        <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-          {title || "BarberApp"}
-        </h1>
+        {title ? (
+          <h1 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+            {title}
+          </h1>
+        ) : (
+          <Skeleton className="h-4 w-[150px]" />
+        )}
       </div>
 
       <div className="flex items-center gap-2">

@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { fetchAllAppointments } from "@/lib/appointments";
+import { Separator } from "@radix-ui/react-separator";
 import { useEffect, useState } from "react";
 import LoadingPage from "./loading";
 type AppointmentStatus = "completed" | "scheduled";
@@ -171,13 +172,20 @@ export default function AppointmentHistoric() {
                     </p>
                   </div>
                 </div>
-
-                <div className="flex flex-col items-center text-center px-3 py-2 w-20">
-                  <span className="text-xs uppercase text-gray-500">{mes}</span>
-                  <span className="text-4xl font-normal">{dia}</span>
-                  <span className="text-md font-medium text-gray-700 dark:text-gray-300 mt-1">
-                    {hora}
-                  </span>
+                <div className="flex flex-row gap-4">
+                  <Separator
+                    className="border border-neutral-200 dark:border-neutral-700 "
+                    orientation="vertical"
+                  />
+                  <div className="flex flex-col items-center text-center px-3 py-2 w-20">
+                    <span className="text-xs uppercase text-gray-500">
+                      {mes}
+                    </span>
+                    <span className="text-4xl font-normal">{dia}</span>
+                    <span className="text-md font-medium text-gray-700 dark:text-gray-300 mt-1">
+                      {hora}
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
