@@ -21,6 +21,15 @@ create table services (
   updated_at timestamp default now()
 );
 
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text,
+  phone text,
+  app_role text, -- 'owner' | 'barbeiro' | 'admin' | null
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
 CREATE TABLE barbers (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   barbershop_id uuid REFERENCES barbershops(id) ON DELETE CASCADE,  -- vínculo com a barbearia

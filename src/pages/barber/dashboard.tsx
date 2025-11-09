@@ -5,6 +5,7 @@ import type { AppointmentEnd } from "@/lib/appointments";
 import { supabase } from "@/lib/supabase-client";
 import { CalendarDays, Scissors, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import LoadingPage from "../loading";
 
 type Stat = {
   barbers: number;
@@ -23,12 +24,50 @@ type Stat = {
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stat | null>(null);
-  const [appointments, setAppointments] = useState<AppointmentEnd[]>([]);
+  const [appointments, setAppointments] = useState<AppointmentEnd[] | []>([]);
   const [loading, setLoading] = useState(true);
+  const [barberName, setBarberName] = useState("");
 
   useEffect(() => {
     async function loadDashboard() {
       setLoading(true);
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        console.error("Usuário não autenticado:", userError);
+        setLoading(false);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile) {
+        console.error("Perfil não encontrado para o usuário.");
+        setLoading(false);
+        return;
+      }
+
+      const { data: barber } = await supabase
+        .from("barbers")
+        .select("id, full_name")
+        .eq("profile_id", profile.id)
+        .single();
+
+      if (!barber) {
+        console.error("Barbeiro não encontrado para este perfil.");
+        setLoading(false);
+        return;
+      }
+      setBarberName(barber.full_name);
+      console.log(barber);
 
       const [barbersRes, appointmentsRes, clientsRes] = await Promise.all([
         supabase.from("barbers").select("id", { count: "exact", head: true }),
@@ -41,6 +80,7 @@ export default function Dashboard() {
             services:service_id(name)
           `
           )
+          .eq("barber_id", barber.id)
           .order("start_time", { ascending: true })
           .limit(5),
         supabase.from("client").select("id", { count: "exact", head: true }),
@@ -51,27 +91,18 @@ export default function Dashboard() {
         appointments: appointmentsRes.data?.length ?? 0,
         clients: clientsRes.count ?? 0,
       });
-      const normalized: AppointmentEnd[] = (appointmentsRes.data ?? []).map(
-        (appt: any) => {
-          return {
-            id: String(appt.id),
-            start_time: appt.start_time,
-            end_time: appt.end_time,
-            status: appt.status,
-            barbers: appt.barbers
-              ? appt.barbers ?? { id: "", full_name: "Desconhecido" }
-              : { id: "", full_name: "Desconhecido" },
-            barbershops: appt.barbershops
-              ? appt.barbershops ?? { id: "", name: "Não informado" }
-              : { id: "", name: "Não informado" },
-            services: appt.services
-              ? appt.services ?? { id: "", name: "Serviço não informado" }
-              : { id: "", name: "Serviço não informado" },
-          };
-        }
-      );
-      setAppointments(normalized || []);
 
+      const normalized = (appointmentsRes.data ?? []).map((appt: any) => ({
+        id: String(appt.id),
+        start_time: appt.start_time,
+        end_time: appt.end_time,
+        status: appt.status,
+        barbers: appt.barbers ?? { id: "", full_name: "Desconhecido" },
+        services: appt.services ?? { id: "", name: "Serviço não informado" },
+        barbershops: appt.barbershops ?? { id: "", name: "Não informado" },
+      }));
+
+      setAppointments(normalized);
       setLoading(false);
     }
 
@@ -79,18 +110,14 @@ export default function Dashboard() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-zinc-500">
-        Carregando dados...
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   return (
     <main className="p-6 space-y-8 pb-20">
       {/* Cabeçalho */}
       <h1 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">
-        Dashboard
+        Dashboard - {barberName}
       </h1>
 
       {/* Estatísticas principais */}

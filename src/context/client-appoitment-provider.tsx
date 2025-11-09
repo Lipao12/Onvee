@@ -9,6 +9,7 @@ interface ClientAppointmentContextType {
   setService: (service: Service) => void;
   setBarber: (barber: Barber) => void;
   setSlotDate: (slotDate: TimeSlot) => void;
+  clearData: () => void;
 }
 
 interface TimeSlot {
@@ -32,6 +33,15 @@ export function ClientAppointmentProvider({
     end: new Date(),
   });
 
+  const clearData = () => {
+    setService(null);
+    setBarber(null);
+    setSlotDate({
+      start: new Date(),
+      end: new Date(),
+    });
+  };
+
   return (
     <ClientAppointmentContext.Provider
       value={{
@@ -41,6 +51,7 @@ export function ClientAppointmentProvider({
         setService,
         setBarber,
         setSlotDate,
+        clearData,
       }}
     >
       {children}

@@ -206,7 +206,7 @@ export default function CalendarList({
                 {Object.entries(slotsByBarber).map(([barberName, slots]) => (
                   <div key={barber?.full_name} className="space-y-3">
                     <h3 className="font-semibold text-lg">
-                      {barberName ? barberName : barber?.full_name}
+                      {barberName ? barber?.full_name : barber?.full_name}
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {slots.map((slot, index) => (

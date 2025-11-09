@@ -1,7 +1,9 @@
+import PhoneLogin from "@/components/phone-login";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Barber } from "@/types/barber";
 import type { Service } from "@/types/service";
+import type { User as SupaUser } from "@supabase/supabase-js";
 import { CalendarDays, Scissors, User } from "lucide-react";
 
 interface ConfirmBookingProps {
@@ -11,9 +13,14 @@ interface ConfirmBookingProps {
     service: Service | null;
     date: Date;
   };
+  user?: SupaUser | null;
 }
 
-export default function ConfirmBooking({ onNext, info }: ConfirmBookingProps) {
+export default function ConfirmBooking({
+  onNext,
+  info,
+  user,
+}: ConfirmBookingProps) {
   return (
     <div className="max-w-md mx-auto space-y-6 mt-8">
       <Card className="border-none shadow-none rounded-2xl bg-transparent">
@@ -62,14 +69,18 @@ export default function ConfirmBooking({ onNext, info }: ConfirmBookingProps) {
         </CardContent>
       </Card>
 
-      <div className="flex justify-center">
-        <Button
-          onClick={onNext}
-          className="h-12 px-8 text-base font-medium transition"
-        >
-          Confirmar Agendamento
-        </Button>
-      </div>
+      {user ? (
+        <div className="flex justify-center">
+          <Button
+            onClick={onNext}
+            className="h-12 px-8 text-base font-medium transition"
+          >
+            Confirmar Agendamento
+          </Button>
+        </div>
+      ) : (
+        <PhoneLogin />
+      )}
     </div>
   );
 }

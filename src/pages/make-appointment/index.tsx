@@ -59,8 +59,15 @@ export default function MakeAppointment() {
       "MakeAppointment must be used within a ClientAppointmentProvider"
     );
   }
-  const { service, barber, slotDate, setService, setBarber, setSlotDate } =
-    clientAppointment;
+  const {
+    service,
+    barber,
+    slotDate,
+    setService,
+    setBarber,
+    setSlotDate,
+    clearData,
+  } = clientAppointment;
 
   // Navegação segura
   const goToNext = useCallback(() => {
@@ -103,6 +110,11 @@ export default function MakeAppointment() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleStartNewAppointment = () => {
+    clearData();
+    setCurrentStep(1);
   };
 
   const currentStepData = STEPS[currentStep - 1];
@@ -187,7 +199,9 @@ export default function MakeAppointment() {
             info={{ barber: barber, service: service, date: slotDate.start }}
           />
         )}
-        {currentStep === 5 && <BookingSuccess />}
+        {currentStep === 5 && (
+          <BookingSuccess onNext={handleStartNewAppointment} />
+        )}
       </main>
     </div>
   );

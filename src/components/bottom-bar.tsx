@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase-client";
-import { Calendar, HomeIcon, Plus } from "lucide-react";
+import { Calendar, HomeIcon, LogOut, Plus } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BottomBar() {
@@ -19,7 +19,7 @@ export default function BottomBar() {
     { name: "Home", icon: HomeIcon, path: "/home" },
     { name: "Reserva", icon: Plus, path: "/newappointment" },
     { name: "Histórico", icon: Calendar, path: "/appointments" },
-    //{ name: "Sair", icon: LogOut, path: "/logout" },
+    { name: "Sair", icon: LogOut, path: "/logout" },
   ];
 
   const handleLogout = async () => {
