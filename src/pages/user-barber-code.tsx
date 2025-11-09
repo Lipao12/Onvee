@@ -131,6 +131,16 @@ export default function UserBarberCode() {
               </div>
             )}
           </div>
+
+          <Button
+            onClick={() => {
+              navigator("/login");
+            }}
+            variant={"outline"}
+            className="mt-5 w-full"
+          >
+            Sou berbeiro
+          </Button>
         </CardContent>
       </Card>
     </div>
