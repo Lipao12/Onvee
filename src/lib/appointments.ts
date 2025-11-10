@@ -24,7 +24,7 @@ export async function createAppointment(appointmentData:Partial<Appointment>){
   return data;
 }
 
-type AppointmentStatus = "completed" | "scheduled";
+export type AppointmentStatus = "completed" | "scheduled";
 export interface AppointmentEnd {
   id: string;
   barbershops: {
@@ -39,6 +39,7 @@ export interface AppointmentEnd {
     id: string;
     name: string;
   };
+  end_time?: string;
   start_time: string;
   status: AppointmentStatus;
 } 

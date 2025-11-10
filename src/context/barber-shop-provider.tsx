@@ -152,9 +152,12 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         const { data: breaks, error: breaksError } = await supabase
           .from("breaks")
           .select("start_time, end_time")
-          .eq("barber_id", barberId);
+          .eq("barber_id", barberId)
+          .gte("start_time", `${dateString}T00:00:00`)
+          .lte("end_time", `${dateString}T23:59:59`);
 
         if (breaksError) throw breaksError;
+        console.log(breaks);
 
         // 3. (Opcional) Buscar agendamentos confirmados
         const { data: appointments, error: apptError } = await supabase
@@ -166,6 +169,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
           .lte("end_time", `${dateString}T23:59:59`);
 
         if (apptError) throw apptError;
+        console.log(appointments);
 
         // 4. Função auxiliar: verifica conflito com intervalo (break ou appointment)
         const hasConflict = (
@@ -174,9 +178,11 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
           intervals: Array<{ start_time: string; end_time: string }>
         ): boolean => {
           return intervals.some((interval) => {
-            const start = new Date(interval.start_time);
-            const end = new Date(interval.end_time);
-            return slotStart < end && slotEnd > start;
+            const start = new Date(interval.start_time).getTime();
+            const end = new Date(interval.end_time).getTime();
+            const s = slotStart.getTime();
+            const e = slotEnd.getTime();
+            return s < end && e > start;
           });
         };
 
@@ -236,7 +242,6 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
 
         // Ordena por horário de início
         availableSlots.sort((a, b) => a.start.getTime() - b.start.getTime());
-
 
         return availableSlots;
       } catch (err) {
