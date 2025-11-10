@@ -31,7 +31,7 @@ export default function Login() {
         });
         if (error) throw error;
       }
-      navigate("/dashboard");
+      navigate("/barber/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

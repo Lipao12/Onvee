@@ -7,6 +7,7 @@ import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
 import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
+import WorkingHoursPage from "./pages/barber/work-time-settings";
 import AppointmentHistoric from "./pages/historic";
 import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
@@ -49,10 +50,18 @@ export default function App() {
 
         {/* Rota protegida */}
         <Route
-          path="/dashboard"
+          path="/barber/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/working-hours"
+          element={
+            <ProtectedRoute>
+              <WorkingHoursPage />
             </ProtectedRoute>
           }
         />

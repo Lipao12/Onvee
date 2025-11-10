@@ -1,3 +1,4 @@
+import AvailabilityErrorState from "@/components/availability-error-state";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -72,7 +73,7 @@ export default function CalendarList({
   useEffect(() => {
     const fetchAvailability = async () => {
       if (!service) {
-        setError("Selecione um serviço primeiro");
+        setError("select_service");
         return;
       }
 
@@ -88,10 +89,10 @@ export default function CalendarList({
         setAvailableSlots(slots);
 
         if (slots.length === 0) {
-          setError("Nenhum horário disponível para esta data");
+          setError("not_work_time");
         }
       } catch (err) {
-        setError("Erro ao carregar horários disponíveis");
+        setError("error_load_work_time");
         console.error(err);
       } finally {
         setLoading(false);
@@ -190,15 +191,17 @@ export default function CalendarList({
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                 <p className="text-muted-foreground mt-2">
-                  Carregando horários...
+                  Buscando horários disponíveis...
                 </p>
               </div>
             )}
 
             {error && !loading && (
-              <div className="text-center py-8">
-                <p className="text-destructive">{error}</p>
-              </div>
+              <AvailabilityErrorState
+                errorType={error}
+                onResetDate={() => setSelectedDate(new Date())}
+                onRetry={() => window.location.reload()}
+              />
             )}
 
             {!loading && !error && (

@@ -69,7 +69,7 @@ export default function Dashboard() {
       setBarberName(barber.full_name);
       console.log(barber);
 
-      const [barbersRes, appointmentsRes, clientsRes] = await Promise.all([
+      const [barbersRes, appointmentsRes] = await Promise.all([
         supabase.from("barbers").select("id", { count: "exact", head: true }),
         supabase
           .from("appointments")
@@ -83,13 +83,13 @@ export default function Dashboard() {
           .eq("barber_id", barber.id)
           .order("start_time", { ascending: true })
           .limit(5),
-        supabase.from("client").select("id", { count: "exact", head: true }),
+        //supabase.from("client").select("id", { count: "exact", head: true }),
       ]);
 
       setStats({
         barbers: barbersRes.count ?? 0,
         appointments: appointmentsRes.data?.length ?? 0,
-        clients: clientsRes.count ?? 0,
+        clients: 2, //clientsRes.count ?? 0,
       });
 
       const normalized = (appointmentsRes.data ?? []).map((appt: any) => ({

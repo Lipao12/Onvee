@@ -1,5 +1,13 @@
 import { supabase } from "@/lib/supabase-client";
-import { Calendar, HomeIcon, LogOut, Plus } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  HomeIcon,
+  LayoutDashboard,
+  LogOut,
+  Plus,
+  Scissors,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BottomBar() {
@@ -15,11 +23,22 @@ export default function BottomBar() {
     navigate(path);
   };
 
-  const tabs = [
+  /*const tabs = [
     { name: "Home", icon: HomeIcon, path: "/home" },
     { name: "Reserva", icon: Plus, path: "/newappointment" },
     { name: "Histórico", icon: Calendar, path: "/appointments" },
+    //{ name: "Sair", icon: LogOut, path: "/logout" },
+  ];*/
+
+  const barberTabs = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/barber/dashboard" },
+    { name: "Agenda", icon: Calendar, path: "/barber/schedule" },
+    { name: "Horários", icon: Clock, path: "/barber/working-hours" },
+    { name: "Serviços", icon: Scissors, path: "/barber/services" },
     { name: "Sair", icon: LogOut, path: "/logout" },
+    { name: "Home", icon: HomeIcon, path: "/home" },
+    { name: "Reserva", icon: Plus, path: "/newappointment" },
+    { name: "Histórico", icon: Calendar, path: "/appointments" },
   ];
 
   const handleLogout = async () => {
@@ -38,7 +57,7 @@ export default function BottomBar() {
         `}
     >
       <div className="flex justify-around items-center py-2 px-1">
-        {tabs.map((tab) => {
+        {barberTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive =
             tab.path === "/home"
