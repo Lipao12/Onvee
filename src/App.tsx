@@ -12,6 +12,7 @@ import AppointmentHistoric from "./pages/historic";
 import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
 import MakeAppointment from "./pages/make-appointment";
+import ManageServicesPage from "./pages/owner/services";
 import UserBarberCode from "./pages/user-barber-code";
 
 export default function App() {
@@ -65,6 +66,14 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/owner/menage-services"
+          element={
+            <ProtectedRoute>
+              <ManageServicesPage />
+            </ProtectedRoute>
+          }
+        />
         <Route element={<AppLayout />}>
           <Route path="/home" element={<ClientHomePage />} />
           <Route path="/services" element={<MakeAppointment />} />
@@ -74,7 +83,6 @@ export default function App() {
         <Route path="/" element={<UserBarberCode />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
       {isMobile && !hideBottomBar && <BottomBar />}
     </div>
   );

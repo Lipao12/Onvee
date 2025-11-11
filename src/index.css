@@ -43,6 +43,28 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme{
+   /* Paleta Vintage */
+  --color-vintage-50:  #F5E6D3;
+  --color-vintage-100: #EDE0C8;
+  --color-vintage-200: #D4A574;
+  --color-vintage-300: #C49E68;
+  --color-vintage-400: #7B3F00;
+  --color-vintage-500: #5B4636;
+  --color-vintage-600: #2F2F2F;
+  --color-vintage-700: #2A2A2A;
+  --color-vintage-800: #1F1F1F;
+  --color-vintage-900: #141414;
+  /* Tokens nomeados */
+  --color-vintage-primary:   #7B3F00;
+  --color-vintage-secondary: #C49E68;
+  --color-vintage-accent:    #D4A574;
+  --color-vintage-background:#F5E6D3;
+  --color-vintage-surface:   #EDE0C8;
+  --color-vintage-text:      #2F2F2F;
+  --color-vintage-muted:     #5B4636;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

@@ -34,7 +34,7 @@ export default function BottomBar() {
     { name: "Dashboard", icon: LayoutDashboard, path: "/barber/dashboard" },
     { name: "Agenda", icon: Calendar, path: "/barber/schedule" },
     { name: "Horários", icon: Clock, path: "/barber/working-hours" },
-    { name: "Serviços", icon: Scissors, path: "/barber/services" },
+    { name: "Serviços", icon: Scissors, path: "/owner/menage-services" },
     { name: "Sair", icon: LogOut, path: "/logout" },
     { name: "Home", icon: HomeIcon, path: "/home" },
     { name: "Reserva", icon: Plus, path: "/newappointment" },

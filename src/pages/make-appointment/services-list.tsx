@@ -1,6 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { useBarberShop } from "@/context/barber-shop-provider";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Scissors } from "lucide-react";
 import { useState } from "react";
 
 /*const services_teste = [
@@ -61,11 +61,20 @@ export default function ServicesList({
                 className="cursor-pointer overflow-hidden bg-zinc-800 flex flex-col transition hover:shadow-lg"
               >
                 <div className="relative w-full h-32 overflow-hidden">
-                  <img
-                    src={service.image_url || ""}
-                    alt={service.name}
-                    className="object-cover w-full h-full"
-                  />
+                  {service.image_url ? (
+                    <img
+                      src={service.image_url}
+                      alt={service.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center bg-linear-to-br  from-[#1B263B] via-[#415A77] to-[#F8F9FA] 
+                      dark:from-[#2b2b2b] dark:via-[#4a3c2b] dark:to-[#d7bfa6]"
+                    >
+                      <Scissors className="w-12 h-12 text-white" />
+                    </div>
+                  )}
                 </div>
 
                 <CardContent className="flex flex-col py-4 px-4">

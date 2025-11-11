@@ -164,7 +164,7 @@ export default function MakeAppointment() {
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   <div
-                    className={`w-6 h-2 rounded-sm mb-1 transition-all ${
+                    className={`w-7 h-2 rounded-sm mb-1 transition-all ${
                       isCurrent
                         ? "bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
                         : isActive
