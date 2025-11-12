@@ -1,3 +1,4 @@
+import { useAuth, type UserRole } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
 import {
   Calendar,
@@ -7,13 +8,22 @@ import {
   LogOut,
   Plus,
   Scissors,
+  Settings,
+  Users,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+interface TabConfig {
+  name: string;
+  icon: React.ComponentType<any>;
+  path: string;
+  roles: UserRole[];
+}
 
 export default function BottomBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const { user, isAuthenticated } = useAuth();
 
   const handleNavigate = async (path: string) => {
     if (path === "/logout") {
@@ -30,20 +40,89 @@ export default function BottomBar() {
     //{ name: "Sair", icon: LogOut, path: "/logout" },
   ];*/
 
-  const barberTabs = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/barber/dashboard" },
-    { name: "Agenda", icon: Calendar, path: "/barber/schedule" },
-    { name: "Horários", icon: Clock, path: "/barber/working-hours" },
-    { name: "Serviços", icon: Scissors, path: "/owner/menage-services" },
-    { name: "Sair", icon: LogOut, path: "/logout" },
-    { name: "Home", icon: HomeIcon, path: "/home" },
-    { name: "Reserva", icon: Plus, path: "/newappointment" },
-    { name: "Histórico", icon: Calendar, path: "/appointments" },
-  ];
+  // Configuração centralizada de todas as abas
+  const allTabs: TabConfig[] = [
+    // Client Tabs
+    {
+      name: "Home",
+      icon: HomeIcon,
+      path: "/home",
+      roles: ["client", "unauthenticated"],
+    },
+    {
+      name: "Agendar",
+      icon: Plus,
+      path: "/newappointment",
+      roles: ["client", "unauthenticated"],
+    },
+    {
+      name: "Histórico",
+      icon: Calendar,
+      path: "/appointments",
+      roles: ["client", "unauthenticated"],
+    },
 
+    // Barber Tabs
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/barber/dashboard",
+      roles: ["barber", "owner"],
+    },
+    {
+      name: "Agenda",
+      icon: Calendar,
+      path: "/barber/schedule",
+      roles: ["barber", "owner"],
+    },
+    {
+      name: "Horários",
+      icon: Clock,
+      path: "/barber/working-hours",
+      roles: ["barber", "owner"],
+    },
+
+    // Owner Tabs
+    {
+      name: "Serviços",
+      icon: Scissors,
+      path: "/owner/manage-services",
+      roles: ["owner"],
+    },
+    {
+      name: "Barbeiros",
+      icon: Users,
+      path: "/owner/manage-barbers",
+      roles: ["owner"],
+    },
+    {
+      name: "Configurações",
+      icon: Settings,
+      path: "/owner/settings",
+      roles: ["owner"],
+    },
+
+    {
+      name: "Sair",
+      icon: LogOut,
+      path: "/logout",
+      roles: ["client", "unauthenticated", "barber", "owner"],
+    },
+  ];
   const handleLogout = async () => {
     supabase.auth.signOut();
   };
+
+  // Filtrar abas baseado no role do usuário
+  const getFilteredTabs = () => {
+    if (!isAuthenticated || !user)
+      return allTabs.filter((tab) => tab.roles.includes("unauthenticated"));
+
+    console.log(user);
+    return allTabs.filter((tab) => tab.roles.includes(user.role));
+  };
+
+  const tabs = getFilteredTabs();
 
   return (
     <nav
@@ -57,7 +136,7 @@ export default function BottomBar() {
         `}
     >
       <div className="flex justify-around items-center py-2 px-1">
-        {barberTabs.map((tab) => {
+        {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive =
             tab.path === "/home"

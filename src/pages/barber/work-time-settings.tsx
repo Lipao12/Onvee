@@ -73,22 +73,17 @@ export default function WorkingHoursPage() {
           return;
         }
 
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("id")
-          .eq("id", user.id)
-          .single();
-
-        if (profileError || !profile) {
-          console.error("Perfil não encontrado:", profileError);
-          setLoading(false);
-          return;
-        }
-
         const { data: barber, error: barberError } = await supabase
           .from("barbers")
-          .select("id, full_name")
-          .eq("profile_id", profile.id)
+          .select(
+            `
+              id,
+              profiles!barbers_profile_id_fkey (
+                id
+              )
+            `
+          )
+          .eq("profiles.id", user.id)
           .single();
 
         if (barberError || !barber) {
@@ -98,6 +93,7 @@ export default function WorkingHoursPage() {
         }
 
         setBarberId(barber.id);
+        console.log(barber);
 
         const [wh, br] = await Promise.all([
           fetchWorkingHours(barber.id),

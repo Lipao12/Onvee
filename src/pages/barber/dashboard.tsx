@@ -10,32 +10,46 @@ export default function Dashboard() {
   const [barberName, setBarberName] = useState("");
   const now = new Date();
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   useEffect(() => {
     async function loadDashboard() {
       setLoading(true);
 
       const {
         data: { user },
+        error: authError,
       } = await supabase.auth.getUser();
-      if (!user) return setLoading(false);
+      if (authError || !user) {
+        console.error("Usuário não autenticado");
+        return setLoading(false);
+      }
 
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, full_name")
         .eq("id", user.id)
         .single();
 
-      if (!profile) return setLoading(false);
+      if (profileError || !profile) {
+        console.error("Perfil não encontrado", profileError);
+        return setLoading(false);
+      }
+      setBarberName(profile.full_name || "Barbeiro");
 
-      const { data: barber } = await supabase
+      const { data: barber, error: barberError } = await supabase
         .from("barbers")
-        .select("id, full_name, barbershop_id")
+        .select("id, barbershop_id")
         .eq("profile_id", profile.id)
         .single();
 
-      if (!barber) return setLoading(false);
-
-      setBarberName(barber.full_name);
+      if (barberError || !barber) {
+        console.error("Barbeiro não encontrado", barberError);
+        return setLoading(false);
+      }
 
       // Filtro apenas dos atendimentos de hoje
       const start = new Date();
@@ -43,21 +57,29 @@ export default function Dashboard() {
       const end = new Date();
       end.setHours(23, 59, 59, 999);
 
-      const { data: appointmentsRes } = await supabase
+      const { data: rawAppointments, error: apptError } = await supabase
         .from("appointments")
         .select(
           `
-          id, start_time, end_time, status,
-          barbers:barber_id(full_name),
-          services:service_id(name)
-        `
+            id,
+            start_time,
+            end_time,
+            status,
+            service_id,
+            barbershop_id
+          `
         )
         .eq("barber_id", barber.id)
-        .gte("start_time", start.toISOString())
-        .lte("end_time", end.toISOString())
+        .gte("start_time", today.toISOString())
+        .lt("start_time", tomorrow.toISOString())
         .order("start_time", { ascending: true });
 
-      const normalized: AppointmentEnd[] = (appointmentsRes ?? []).map(
+      if (apptError) {
+        console.error("Erro ao carregar agendamentos", apptError);
+        return setLoading(false);
+      }
+
+      const normalized: AppointmentEnd[] = (rawAppointments ?? []).map(
         (appt: any) => ({
           id: String(appt.id),
           start_time: appt.start_time, // mantém como string conforme o tipo
