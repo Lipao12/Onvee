@@ -285,63 +285,79 @@ export default function ManageServicesPage() {
           {services.map((service) => (
             <Card
               key={service.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow"
+              className="overflow-hidden hover:shadow-lg transition-shadow active:scale-98"
             >
-              <div className="aspect-video relative bg-muted">
+              {/* Container da imagem com badge */}
+              <div className="aspect-5/3 relative bg-muted">
                 {service.image_url ? (
                   <img
                     src={service.image_url}
                     alt={service.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br dark:from-[#1B263B] dark:via-[#415A77] dark:to-[#F8F9FA] from-[#2b2b2b] via-[#4a3c2b] to-[#d7bfa6]">
-                    <Scissors className="w-12 h-12 text-white" />
+                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-amber-800 to-amber-600">
+                    <Scissors className="w-8 h-8 text-white" />
                   </div>
                 )}
-                <div className="absolute top-3 right-3">
-                  <Badge variant="secondary" className="backdrop-blur-sm">
-                    {service.duration_minutes} min
+
+                {/* Badge de duração melhorado */}
+                <div className="absolute top-2 right-2">
+                  <Badge
+                    variant="secondary"
+                    className="bg-black/80 text-white backdrop-blur-sm px-2 py-1"
+                  >
+                    <Clock className="w-3 h-3 mr-1" />
+                    {service.duration_minutes}min
                   </Badge>
                 </div>
               </div>
 
-              <CardContent className="p-4">
+              {/* Conteúdo do card */}
+              <CardContent className="p-3">
+                {/* Cabeçalho com nome e preço */}
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-lg leading-tight">
+                  <h3 className="font-semibold text-base leading-tight flex-1 mr-2">
                     {service.name}
                   </h3>
-                  <span className="text-lg font-bold text-green-600">
+                  <span className="text-lg font-bold text-green-600 whitespace-nowrap">
                     {formatPrice(service.price)}
                   </span>
                 </div>
 
+                {/* Descrição (se existir) */}
                 {service.description && (
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
                     {service.description}
                   </p>
                 )}
 
+                {/* Rodapé com ações */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>{service.duration_minutes} min</span>
+                  {/* Indicador visual de duração (redundante mas útil) */}
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="w-3 h-3" />
+                    <span>{service.duration_minutes} minutos</span>
                   </div>
 
+                  {/* Botões de ação */}
                   <div className="flex gap-1">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleEdit(service)}
+                      className="h-8 w-8 p-0"
                     >
-                      <Edit className="w-4 h-4" />
+                      <Edit className="w-3 h-3" />
                     </Button>
                     <Button
                       size="sm"
                       variant="destructive"
                       onClick={() => handleDelete(service.id)}
+                      className="h-8 w-8 p-0"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>
                 </div>
