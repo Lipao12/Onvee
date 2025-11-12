@@ -134,6 +134,40 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.theme-vintage {
+  --background: #F5E6D3;
+  --foreground: #2F2F2F;
+  --card: #EDE0C8;
+  --card-foreground: #2F2F2F;
+  --popover: #F5E6D3;
+  --popover-foreground: #2F2F2F;
+  --primary: #7B3F00;
+  --primary-foreground: #F5E6D3;
+  --secondary: #C49E68;
+  --secondary-foreground: #2F2F2F;
+  --muted: #5B4636;
+  --muted-foreground: #2F2F2F;
+  --accent: #D4A574;
+  --accent-foreground: #2F2F2F;
+  --destructive: #dc2626;
+  --border: #C49E68;
+  --input: #EDE0C8;
+  --ring: #7B3F00;
+}
+
+.theme-vintage.dark {
+  /* Dark mode vintage */
+  --background: #1A120B;
+  --foreground: #F5E6D3;
+  --card: #2F2F2F;
+  --card-foreground: #F5E6D3;
+  --primary: #D4A574;
+  --primary-foreground: #1A120B;
+  --secondary: #5B4636;
+  --secondary-foreground: #F5E6D3;
+  --border: #5B4636;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import BottomBar from "./components/bottom-bar";
 import { useDynamicFavicon } from "./components/dynamic-favicon";
@@ -24,6 +25,7 @@ export default function App() {
     return (
       path.startsWith("/findbarber") ||
       path.startsWith("/login") ||
+      path.startsWith("/phone-auth") ||
       path === "/"
     );
   };
@@ -40,8 +42,22 @@ export default function App() {
 
   useDynamicFavicon(shop?.image_url as string);
 
+  useEffect(() => {
+    // Aplicar tema no documento
+    const root = document.documentElement;
+
+    // Remover classes antigas
+    root.classList.remove("theme-default", "theme-default");
+
+    // Adicionar classe nova
+    root.classList.add(`theme-${"default"}`);
+
+    // Salvar no localStorage
+    localStorage.setItem("app-theme", "default");
+  }, []);
+
   return (
-    <div>
+    <div className="">
       {isMobile && !hideBottomBar && (
         <Header title={shop?.name} logo_url={shop?.image_url as string} />
       )}
@@ -67,7 +83,7 @@ export default function App() {
           }
         />
         <Route
-          path="/owner/menage-services"
+          path="/owner/manage-services"
           element={
             <ProtectedRoute>
               <ManageServicesPage />
