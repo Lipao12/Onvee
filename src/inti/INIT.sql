@@ -30,6 +30,12 @@ create table public.profiles (
   updated_at timestamptz default now()
 );
 
+create table clients (
+  profile_id uuid primary key references profiles(id) on delete cascade,
+  phone text,
+  appointment_id uuid references appointments(id)
+);
+
 CREATE TABLE barbers (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   barbershop_id uuid REFERENCES barbershops(id) ON DELETE CASCADE,  -- vínculo com a barbearia
