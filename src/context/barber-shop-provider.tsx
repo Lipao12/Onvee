@@ -48,7 +48,6 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
   );
   const CACHE_DURATION = 5 * 60 * 1000;
 
-  // Grok indicou remover esse useCallBack
   const fetchShopData = useCallback(async (shopId: string | null) => {
     if (!shopId) {
       setShop(null);
@@ -69,53 +68,79 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     setError(null);
 
-    if (shopId === searchId && Date.now() - lastFetch < 5 * 60 * 1000) {
-      setLastFetch(Date.now());
-      setLoading(false);
-      return;
-    }
-
-    const useId = shopId ? shopId : searchId;
-
     try {
-      setSearchId(useId);
       const [shopRes, serviceRes, barberRes] = await Promise.all([
-        supabase.from("barbershops").select("*").eq("id", useId).single(),
+        supabase.from("barbershops").select("*").eq("id", shopId).single(),
         supabase
           .from("services")
           .select("*")
-          .eq("barbershop_id", useId)
+          .eq("barbershop_id", shopId)
           .order("price", { ascending: true }),
         supabase
           .from("barbers")
-          .select("*")
-          .eq("barbershop_id", useId)
-          .order("rating", { ascending: true }),
+          .select("id, barbershop_id, profile_id, bio, rating, is_active")
+          .eq("barbershop_id", shopId),
       ]);
 
       if (shopRes.error) throw shopRes.error;
       if (serviceRes.error) throw serviceRes.error;
       if (barberRes.error) throw barberRes.error;
 
+      const barbersData = barberRes.data || [];
+
+      let profileMap: Record<string, any> = {};
+
+      const profileIds = barbersData
+        .map((b: any) => b.profile_id)
+        .filter((id: string | null) => id != null);
+
+      if (profileIds.length > 0) {
+        const { data: profiles, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, full_name, image_url")
+          .in("id", profileIds);
+
+        console.log("profiles: ", profiles);
+
+        if (profileError) {
+          console.warn(
+            "Erro ao carregar perfis (pode ser auth):",
+            profileError
+          );
+        } else if (profiles) {
+          profileMap = Object.fromEntries(profiles.map((p: any) => [p.id, p]));
+        }
+      }
+
+      const enrichedBarbers = barbersData.map((b: any) => {
+        const profile = b.profile_id ? profileMap[b.profile_id] || null : null;
+        return {
+          ...b,
+          ...(profile
+            ? {
+                full_name: profile.full_name,
+                image_url: profile.image_url,
+                phone: profile.phone,
+              }
+            : {}),
+        };
+      });
       const data = {
         shop: shopRes.data,
         services: serviceRes.data || [],
-        barbers: barberRes.data || [],
+        barbers: enrichedBarbers,
       };
 
-      cacheRef.current.set(shopId, {
-        data,
-        timestamp: Date.now(),
-      });
+      console.log(data);
+
+      cacheRef.current.set(shopId, { data, timestamp: Date.now() });
 
       setShop(shopRes.data);
-
       setServices(serviceRes.data || []);
-
-      setBarbers(barberRes.data || []);
+      setBarbers(enrichedBarbers);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao carregar dados");
-      // Limpa states em caso de erro
+      console.error("Erro fatal no fetchShopData:", err);
+      setError(err instanceof Error ? err.message : "Erro ao carregar");
       setShop(null);
       setServices([]);
       setBarbers([]);
