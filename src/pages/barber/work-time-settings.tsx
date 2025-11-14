@@ -77,15 +77,11 @@ export default function WorkingHoursPage() {
           .from("barbers")
           .select(
             `
-              id,
-              profiles!barbers_profile_id_fkey (
-                id
-              )
+             *
             `
           )
-          .eq("profiles.id", user.id)
+          .eq("profile_id", user.id)
           .single();
-
         if (barberError || !barber) {
           console.error("Barbeiro não encontrado:", barberError);
           setLoading(false);
@@ -478,7 +474,7 @@ export default function WorkingHoursPage() {
         </CardContent>
       </Card>
 
-      {/* Save Button Mobile */}
+      {/* Save Button Mobile
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t lg:hidden">
         <Button
           onClick={handleSave}
@@ -493,7 +489,7 @@ export default function WorkingHoursPage() {
           )}
           {saving ? "Salvando..." : "Salvar Alterações"}
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -10,8 +10,8 @@ import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
 import OnboardingWizard from "./pages/barber/onboard";
 import WorkingHoursPage from "./pages/barber/work-time-settings";
-import MakeAppointment from "./pages/client/make-appointment";
 import AppointmentHistoric from "./pages/client/historic";
+import MakeAppointment from "./pages/client/make-appointment";
 import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
 import ManageServicesPage from "./pages/owner/services";
@@ -52,10 +52,10 @@ export default function App() {
     root.classList.remove("theme-default", "theme-vintage");
 
     // Adicionar classe nova
-    root.classList.add(`theme-${"vintage"}`);
+    root.classList.add(`theme-${"default"}`);
 
     // Salvar no localStorage
-    localStorage.setItem("app-theme", "vintage");
+    localStorage.setItem("app-theme", "default");
   }, []);
 
   return (
