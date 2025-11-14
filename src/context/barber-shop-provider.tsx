@@ -35,12 +35,12 @@ const BarberShopContext = createContext<BarberShopContextProps | undefined>(
 );
 
 export function BarberShopProvider({ children }: { children: ReactNode }) {
-  const [searchId, setSearchId] = useState<ShopId>(null);
+  //const [searchId, setSearchId] = useState<ShopId>(null);
   const [shop, setShop] = useState<BarberShop | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [loading, setLoading] = useState(false);
-  const [lastFetch, setLastFetch] = useState<number>(0);
+  //const [lastFetch, setLastFetch] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   const cacheRef = useRef<Map<string, { data: any; timestamp: number }>>(
@@ -79,7 +79,8 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         supabase
           .from("barbers")
           .select("id, barbershop_id, profile_id, bio, rating, is_active")
-          .eq("barbershop_id", shopId),
+          .eq("barbershop_id", shopId)
+          .eq("is_active", true),
       ]);
 
       if (shopRes.error) throw shopRes.error;

@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { fetchAllAppointments } from "@/lib/appointments";
 import { Separator } from "@radix-ui/react-separator";
 import { useEffect, useState } from "react";
-import LoadingPage from "./loading";
+import LoadingPage from "../loading";
 type AppointmentStatus = "completed" | "scheduled";
 
 interface Appointment {

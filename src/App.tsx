@@ -8,11 +8,12 @@ import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
 import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
+import OnboardingWizard from "./pages/barber/onboard";
 import WorkingHoursPage from "./pages/barber/work-time-settings";
-import AppointmentHistoric from "./pages/historic";
+import MakeAppointment from "./pages/client/make-appointment";
+import AppointmentHistoric from "./pages/client/historic";
 import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
-import MakeAppointment from "./pages/make-appointment";
 import ManageServicesPage from "./pages/owner/services";
 import UserBarberCode from "./pages/user-barber-code";
 
@@ -26,6 +27,7 @@ export default function App() {
       path.startsWith("/findbarber") ||
       path.startsWith("/login") ||
       path.startsWith("/phone-auth") ||
+      path.startsWith("/barber/onbording") ||
       path === "/"
     );
   };
@@ -47,13 +49,13 @@ export default function App() {
     const root = document.documentElement;
 
     // Remover classes antigas
-    root.classList.remove("theme-default", "theme-default");
+    root.classList.remove("theme-default", "theme-vintage");
 
     // Adicionar classe nova
-    root.classList.add(`theme-${"default"}`);
+    root.classList.add(`theme-${"vintage"}`);
 
     // Salvar no localStorage
-    localStorage.setItem("app-theme", "default");
+    localStorage.setItem("app-theme", "vintage");
   }, []);
 
   return (
@@ -66,30 +68,40 @@ export default function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Rota protegida */}
-        <Route
-          path="/barber/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/barber/working-hours"
-          element={
-            <ProtectedRoute>
-              <WorkingHoursPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/owner/manage-services"
-          element={
-            <ProtectedRoute>
-              <ManageServicesPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<AppLayout />}>
+          <Route
+            path="/barber/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/barber/working-hours"
+            element={
+              <ProtectedRoute>
+                <WorkingHoursPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/barber/onbording"
+            element={
+              <ProtectedRoute>
+                <OnboardingWizard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/manage-services"
+            element={
+              <ProtectedRoute>
+                <ManageServicesPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         <Route element={<AppLayout />}>
           <Route path="/home" element={<ClientHomePage />} />
           <Route path="/services" element={<MakeAppointment />} />

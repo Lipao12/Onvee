@@ -24,13 +24,32 @@ export default function Login() {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
         alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
+        return;
       }
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (loginError) throw loginError;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não encontrado.");
+
+      const { data: barber } = await supabase
+        .from("barbers")
+        .select("id")
+        .eq("profile_id", user?.id)
+        .maybeSingle();
+
+      console.log(barber);
+
+      if (!barber) {
+        navigate("/barber/onbording");
+        return;
+      }
+
       navigate("/barber/dashboard");
     } catch (err: any) {
       setError(err.message);

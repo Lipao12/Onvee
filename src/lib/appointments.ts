@@ -53,8 +53,7 @@ export async function fetchAllAppointments(client_id: string) {
       end_time,
       status,
       barbers:barber_id (
-        id,
-        full_name
+        profile_id
       ),
       barbershops:barbershop_id (
         id,
@@ -67,6 +66,56 @@ export async function fetchAllAppointments(client_id: string) {
     `)
     //.eq("client_id", client_id)
     .order("start_time", { ascending: false });
+const appointments = data || [];
+    const profileIds = appointments
+  .flatMap((appt: any) => {
+    const b = appt.barbers;
+    return b && b.profile_id ? [b.profile_id] : [];
+  })
+  .filter((id: string | null | undefined): id is string => !!id);
+
+// Busca perfis se houver IDs
+let profileMap: Record<string, any> = {};
+if (profileIds.length > 0) {
+  const { data: profiles, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .in("id", profileIds);
+
+  if (profileError) {
+    console.warn("Erro ao carregar perfis:", profileError);
+  } else if (profiles) {
+    profileMap = Object.fromEntries(
+      profiles.map((p: any) => [p.id, p])
+    );
+  }
+}
+
+// Mapeia “appointments” adicionando dados de perfil ao objeto “barbers”
+
+const enrichedAppointments = appointments.map((appt: any) => {
+  const b = appt.barbers;
+  let enrichedBarber = null;
+
+  if (b && b.profile_id) {
+    const prof = profileMap[b.profile_id];
+    enrichedBarber = {
+      ...b,
+      ...(prof
+        ? {
+            full_name: prof.full_name,
+            image_url: prof.image_url,
+            phone: prof.phone,
+          }
+        : {}),
+    };
+  }
+
+  return {
+    ...appt,
+    barbers: enrichedBarber,
+  };
+});
 
     
     if (error) {
@@ -74,7 +123,7 @@ export async function fetchAllAppointments(client_id: string) {
         throw new Error(error.message);
     }
     
-    const normalized: AppointmentEnd[] = data.map((appt: any) => {
+    const normalized: AppointmentEnd[] = enrichedAppointments.map((appt: any) => {
         return {
             id: String(appt.id),
             start_time: appt.start_time,

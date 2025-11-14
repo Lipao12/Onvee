@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase-client";
+import type { User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export type UserRole = "client" | "barber" | "owner" | "unauthenticated";
@@ -13,7 +14,7 @@ interface AuthUser {
 }
 
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 }
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!profile) {
           setAuthState({
-            user: null,
+            user: session.user,
             isLoading: false,
             isAuthenticated: false,
           });
@@ -129,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event) => {
       if (event === "SIGNED_OUT") {
         localStorage.removeItem("client_session");
         setAuthState({

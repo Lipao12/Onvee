@@ -69,7 +69,7 @@ export default function ConfirmBooking({
         </CardContent>
       </Card>
 
-      {user ? (
+      {!user ? (
         <div className="flex justify-center">
           <Button
             onClick={onNext}

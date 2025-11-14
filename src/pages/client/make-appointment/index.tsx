@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useCallback, useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import LoadingPage from "../loading";
+import LoadingPage from "../../loading";
 import BarbersList from "./barber-list";
 import BookingSuccess from "./booking-sucess";
 import CalendarList from "./calendar-list";
@@ -154,9 +154,9 @@ export default function MakeAppointment() {
                   }}
                   className={`flex flex-col items-center text-xs ${
                     isCurrent
-                      ? "text-blue-400"
+                      ? "text-[var(--step-current)]" //"text-blue-400"
                       : isActive
-                      ? "text-blue-700"
+                      ? "text-[var(--step-active)]" //"text-blue-700"
                       : "text-zinc-500"
                   }`}
                   initial={false}
@@ -166,9 +166,9 @@ export default function MakeAppointment() {
                   <div
                     className={`w-7 h-2 rounded-sm mb-1 transition-all ${
                       isCurrent
-                        ? "bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
+                        ? "bg-[var(--step-current)] shadow-[0_0_6px_rgba(59,130,246,0.8)]" //"bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
                         : isActive
-                        ? "bg-blue-600"
+                        ? "bg-[var(--step-active)]" //"bg-blue-600"
                         : "dark:bg-zinc-700 bg-zinc-400"
                     }`}
                   />
