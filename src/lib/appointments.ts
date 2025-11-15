@@ -33,7 +33,9 @@ export interface AppointmentEnd {
   };
   barbers: {
     id: string;
-    full_name: string;
+    profile_id: {
+      full_name: string;
+    };
   };
   services: {
     id: string;
@@ -52,8 +54,11 @@ export async function fetchAllAppointments(client_id: string) {
       start_time,
       end_time,
       status,
-      barbers:barber_id (
-        profile_id
+      barber_id (
+        id,
+        profile_id(
+          full_name
+        )
       ),
       barbershops:barbershop_id (
         id,
@@ -66,75 +71,26 @@ export async function fetchAllAppointments(client_id: string) {
     `)
     //.eq("client_id", client_id)
     .order("start_time", { ascending: false });
-const appointments = data || [];
-    const profileIds = appointments
-  .flatMap((appt: any) => {
-    const b = appt.barbers;
-    return b && b.profile_id ? [b.profile_id] : [];
-  })
-  .filter((id: string | null | undefined): id is string => !!id);
-
-// Busca perfis se houver IDs
-let profileMap: Record<string, any> = {};
-if (profileIds.length > 0) {
-  const { data: profiles, error: profileError } = await supabase
-    .from("profiles")
-    .select("id, full_name")
-    .in("id", profileIds);
-
-  if (profileError) {
-    console.warn("Erro ao carregar perfis:", profileError);
-  } else if (profiles) {
-    profileMap = Object.fromEntries(
-      profiles.map((p: any) => [p.id, p])
-    );
-  }
-}
-
-// Mapeia “appointments” adicionando dados de perfil ao objeto “barbers”
-
-const enrichedAppointments = appointments.map((appt: any) => {
-  const b = appt.barbers;
-  let enrichedBarber = null;
-
-  if (b && b.profile_id) {
-    const prof = profileMap[b.profile_id];
-    enrichedBarber = {
-      ...b,
-      ...(prof
-        ? {
-            full_name: prof.full_name,
-            image_url: prof.image_url,
-            phone: prof.phone,
-          }
-        : {}),
-    };
-  }
-
-  return {
-    ...appt,
-    barbers: enrichedBarber,
-  };
-});
-
     
     if (error) {
         console.error("Erro ao buscar agendamentos:", error.message);
         throw new Error(error.message);
     }
+
+    console.log(data);
     
-    const normalized: AppointmentEnd[] = enrichedAppointments.map((appt: any) => {
+    const normalized: AppointmentEnd[] = data.map((appt: any) => {
         return {
             id: String(appt.id),
             start_time: appt.start_time,
             end_time: appt.end_time,
             status: appt.status as AppointmentStatus,
-            barbers: appt.barbers ? appt.barbers ?? { id: "", full_name: "Desconhecido" } : { id: "", full_name: "Desconhecido" },
+            barbers: appt.barber_id ? appt.barber_id ?? { id: "", full_name: "Desconhecido" } : { id: "", full_name: "Desconhecido" },
             barbershops: appt.barbershops ? appt.barbershops ?? { id: "", name: "Não informado" } : { id: "", name: "Não informado" },
             services: appt.services ? appt.services ?? { id: "", name: "Serviço não informado" } : { id: "", name: "Serviço não informado" },
         }
   }
 );
-
+  console.log(normalized);
   return normalized;
 }

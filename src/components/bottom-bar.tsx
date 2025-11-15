@@ -126,7 +126,7 @@ export default function BottomBar() {
 
   return (
     <nav
-      className={`fixed z-50 transform duration-500 backdrop-blur-md ${
+      className={`fixed z-50 transform duration-500 backdrop-blur-2xl ${
         isIOS
           ? "rounded-3xl bottom-3 left-4 right-4"
           : "bottom-0 left-0 right-0" //rounded-t-2xl

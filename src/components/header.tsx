@@ -32,7 +32,7 @@ export default function Header({
   };*/
 
   return (
-    <header className="w-full flex items-center justify-between px-5 py-3  bg-transparent transition-colors duration-300">
+    <header className="fixed z-50 w-full flex items-center justify-between px-5 py-3 transform duration-500 backdrop-blur-2xl  transition-colors duration-300">
       <div className="flex items-center gap-3">
         {logo_url ? (
           <img

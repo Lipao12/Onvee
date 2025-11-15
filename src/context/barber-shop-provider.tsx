@@ -69,23 +69,32 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const [shopRes, serviceRes, barberRes] = await Promise.all([
-        supabase.from("barbershops").select("*").eq("id", shopId).single(),
-        supabase
-          .from("services")
-          .select("*")
-          .eq("barbershop_id", shopId)
-          .order("price", { ascending: true }),
-        supabase
-          .from("barbers")
-          .select("id, barbershop_id, profile_id, bio, rating, is_active")
-          .eq("barbershop_id", shopId)
-          .eq("is_active", true),
-      ]);
+      const [shopRes, serviceRes, barberRes, barbershopConfigRes] =
+        await Promise.all([
+          supabase.from("barbershops").select("*").eq("id", shopId).single(),
+          supabase
+            .from("services")
+            .select("*")
+            .eq("barbershop_id", shopId)
+            .order("price", { ascending: true }),
+          supabase
+            .from("barbers")
+            .select("id, barbershop_id, profile_id, bio, rating, is_active")
+            .eq("barbershop_id", shopId)
+            .eq("is_active", true),
+          supabase
+            .from("barbershop_config")
+            .select("theme")
+            .eq("barbershop_id", shopId)
+            .single(),
+        ]);
 
       if (shopRes.error) throw shopRes.error;
       if (serviceRes.error) throw serviceRes.error;
       if (barberRes.error) throw barberRes.error;
+      if (barbershopConfigRes.error) throw barbershopConfigRes.error;
+
+      changeTheme(barbershopConfigRes.data.theme);
 
       const barbersData = barberRes.data || [];
 
@@ -149,6 +158,13 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   }, []);
+
+  const changeTheme = (theme: string) => {
+    const root = document.documentElement;
+    root.classList.remove("theme-default", "theme-vintage");
+    root.classList.add(`theme-${theme}`);
+    localStorage.setItem("app-theme", theme);
+  };
 
   const fetchBarberAvailability = useCallback(
     async (

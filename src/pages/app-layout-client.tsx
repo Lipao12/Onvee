@@ -2,11 +2,12 @@
 import { useBarberShop } from "@/context/barber-shop-provider";
 import LoadingPage from "@/pages/loading";
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export default function AppLayout() {
   const { loading, fetchShopData, shop } = useBarberShop();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedShopId = localStorage.getItem("barbershop_id");
@@ -23,8 +24,13 @@ export default function AppLayout() {
     return <LoadingPage />;
   }
 
+  const isHomePage = location.pathname === "/home";
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      className={`pt-16 flex flex-col ${
+        isHomePage ? "h-screen justify-center" : "min-h-screen"
+      }`}
+    >
       <Outlet />
     </div>
   );

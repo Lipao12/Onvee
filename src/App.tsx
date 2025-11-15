@@ -6,17 +6,19 @@ import { useDynamicFavicon } from "./components/dynamic-favicon";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
+import { supabase } from "./lib/supabase-client";
 import { useIsMobile } from "./lib/use-mobile";
 import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
 import OnboardingWizard from "./pages/barber/onboard";
 import WorkingHoursPage from "./pages/barber/work-time-settings";
 import AppointmentHistoric from "./pages/client/historic";
+import ClientHomePage from "./pages/client/home";
 import MakeAppointment from "./pages/client/make-appointment";
-import ClientHomePage from "./pages/home";
-import Login from "./pages/login";
-import ManageServicesPage from "./pages/owner/services";
 import UserBarberCode from "./pages/client/user-barber-code";
+import Login from "./pages/login";
+import ManageBarbersPage from "./pages/owner/manage-barbers-page";
+import ManageServicesPage from "./pages/owner/services";
 
 export default function App() {
   const isMobile = useIsMobile();
@@ -28,7 +30,7 @@ export default function App() {
       path.startsWith("/findbarber") ||
       path.startsWith("/login") ||
       path.startsWith("/phone-auth") ||
-      path.startsWith("/barber/onbording") ||
+      path.startsWith("/barber/onboarding") ||
       path === "/"
     );
   };
@@ -45,7 +47,7 @@ export default function App() {
 
   useDynamicFavicon(shop?.image_url as string);
 
-  useEffect(() => {
+  /*useEffect(() => {
     // Aplicar tema no documento
     const root = document.documentElement;
 
@@ -57,10 +59,23 @@ export default function App() {
 
     // Salvar no localStorage
     localStorage.setItem("app-theme", "default");
-  }, []);
+    const fetchData = async () => {
+      try {
+        const s = await supabase
+          .from("barbers")
+          .select("profile_id(full_name)");
+
+        console.log(s.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);*/
 
   return (
-    <div className="">
+    <div className="min-h-screen">
       <Toaster position="top-center" />
       {isMobile && !hideBottomBar && (
         <Header title={shop?.name} logo_url={shop?.image_url as string} />
@@ -88,7 +103,7 @@ export default function App() {
             }
           />
           <Route
-            path="/barber/onbording"
+            path="/barber/onboarding"
             element={
               <ProtectedRoute>
                 <OnboardingWizard />
@@ -100,6 +115,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <ManageServicesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/manage-barbers"
+            element={
+              <ProtectedRoute>
+                <ManageBarbersPage />
               </ProtectedRoute>
             }
           />

@@ -3,7 +3,7 @@ import { useBarberShop } from "@/context/barber-shop-provider";
 import { Instagram, MapPin } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import LoadingPage from "./loading";
+import LoadingPage from "../loading";
 
 export default function ClientHomePage() {
   const [serachParams] = useSearchParams();

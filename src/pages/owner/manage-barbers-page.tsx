@@ -36,7 +36,7 @@ interface Service {
   image_url?: string;
 }
 
-export default function ManageServicesPage() {
+export default function ManageBarbersPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
@@ -60,7 +60,7 @@ export default function ManageServicesPage() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from("services")
+        .from("barbers")
         .select("*")
         .eq("barbershop_id", barbershop_id)
         .order("created_at", { ascending: false });

@@ -41,7 +41,7 @@ export default function ServicesList({
   const { services } = useBarberShop();
 
   return (
-    <main className="pb-20 px-6">
+    <main className="pb-20">
       <div className="max-w-5xl mx-auto">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => {

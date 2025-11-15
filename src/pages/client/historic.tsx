@@ -1,4 +1,6 @@
+import PhoneLogin from "@/components/phone-login";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/context/auth-provider";
 import { fetchAllAppointments } from "@/lib/appointments";
 import { Separator } from "@radix-ui/react-separator";
 import { useEffect, useState } from "react";
@@ -13,7 +15,9 @@ interface Appointment {
   };
   barbers: {
     id: string;
-    full_name: string;
+    profile_id: {
+      full_name: string;
+    };
   };
   services: {
     id: string;
@@ -119,6 +123,8 @@ export default function AppointmentHistoric() {
     loadAppointments();
   }, []);
 
+  const { user } = useAuth();
+
   if (loading) return <LoadingPage />;
 
   return (
@@ -136,62 +142,70 @@ export default function AppointmentHistoric() {
           </div>
         </div>
       </header>
+      <main className="w-full space-y-4">
+        {!user ? (
+          <div className="space-y-4">
+            {appointments.map((ag) => {
+              const date = new Date(ag.start_time);
 
-      <div className="w-full space-y-4">
-        {appointments.map((ag) => {
-          const date = new Date(ag.start_time);
+              const dia = date.toLocaleDateString("pt-BR", { day: "2-digit" });
+              const mes = date.toLocaleDateString("pt-BR", { month: "long" });
+              const hora = date.toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
 
-          const dia = date.toLocaleDateString("pt-BR", { day: "2-digit" });
-          const mes = date.toLocaleDateString("pt-BR", { month: "long" });
-          const hora = date.toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-
-          return (
-            <Card
-              key={ag.id}
-              className="flex mx-2 justify-between items-center p-4 border-none shadow-none  dark:bg-neutral-900 bg-neutral-100"
-            >
-              <CardContent className="flex flex-row sm:flex-row justify-between items-center w-full gap-4 p-0">
-                <div>
-                  <span
-                    className={`uppercase inline-block px-3 py-1 rounded-full text-xs font-medium self-start
+              return (
+                <Card
+                  key={ag.id}
+                  className="flex mx-2 justify-between items-center p-4 border-none shadow-none  dark:bg-neutral-900 bg-neutral-100"
+                >
+                  <CardContent className="flex flex-row sm:flex-row justify-between items-center w-full gap-4 p-0">
+                    <div>
+                      <span
+                        className={`uppercase inline-block px-3 py-1 rounded-full text-xs font-medium self-start
                 ${
                   ag.status === "completed"
                     ? "bg-gray-100 text-gray-700"
                     : "bg-yellow-100 text-yellow-700"
                 }`}
-                  >
-                    {STATUS_DICT[ag.status] || ag.status.toUpperCase()}
-                  </span>
-                  <div className="flex flex-col flex-1 text-left">
-                    <h3 className="text-lg font-medium">{ag.services.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {ag.barbershops.name} • {ag.barbers.full_name}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-row gap-4">
-                  <Separator
-                    className="border border-neutral-200 dark:border-neutral-700 "
-                    orientation="vertical"
-                  />
-                  <div className="flex flex-col items-center text-center px-3 py-2 w-20">
-                    <span className="text-xs uppercase text-gray-500">
-                      {mes}
-                    </span>
-                    <span className="text-4xl font-normal">{dia}</span>
-                    <span className="text-md font-medium text-gray-700 dark:text-gray-300 mt-1">
-                      {hora}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                      >
+                        {STATUS_DICT[ag.status] || ag.status.toUpperCase()}
+                      </span>
+                      <div className="flex flex-col flex-1 text-left">
+                        <h3 className="text-lg font-medium">
+                          {ag.services.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {ag.barbershops.name} •{" "}
+                          {ag.barbers.profile_id.full_name}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-row gap-4">
+                      <Separator
+                        className="border border-neutral-200 dark:border-neutral-700 "
+                        orientation="vertical"
+                      />
+                      <div className="flex flex-col items-center text-center px-3 py-2 w-20">
+                        <span className="text-xs uppercase text-gray-500">
+                          {mes}
+                        </span>
+                        <span className="text-4xl font-normal">{dia}</span>
+                        <span className="text-md font-medium text-gray-700 dark:text-gray-300 mt-1">
+                          {hora}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <PhoneLogin />
+        )}
+      </main>
     </div>
   );
 }

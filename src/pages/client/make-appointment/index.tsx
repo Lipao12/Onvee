@@ -1,6 +1,7 @@
 import { useBarberShop } from "@/context/barber-shop-provider";
 import { ClientAppointmentContext } from "@/context/client-appoitment-provider";
 import { createAppointment } from "@/lib/appointments";
+import EmptyState from "@/pages/empty-space";
 import type { Barber } from "@/types/barber";
 import type { Service } from "@/types/service";
 import { motion } from "framer-motion";
@@ -51,7 +52,7 @@ export default function MakeAppointment() {
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const { loading } = useBarberShop();
+  const { loading, services, barbers } = useBarberShop();
 
   const clientAppointment = useContext(ClientAppointmentContext);
   if (!clientAppointment) {
@@ -121,6 +122,17 @@ export default function MakeAppointment() {
 
   if (loading) {
     return <LoadingPage />;
+  }
+
+  if (services.length === 0 || barbers.length === 0) {
+    return (
+      <EmptyState
+        title="Ops, sem cortes no momento! ✂️"
+        description="Parece que a barbearia ainda não cadastrou os serviços. Que tal dar uma olhada mais tarde ou entrar em contato com eles?"
+        actionText="Tentar novamente"
+        onAction={() => window.location.reload()}
+      />
+    );
   }
 
   return (
