@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Toaster } from "sonner";
 import BottomBar from "./components/bottom-bar";
 import { useDynamicFavicon } from "./components/dynamic-favicon";
 import Header from "./components/header";
@@ -60,6 +61,7 @@ export default function App() {
 
   return (
     <div className="">
+      <Toaster position="top-center" />
       {isMobile && !hideBottomBar && (
         <Header title={shop?.name} logo_url={shop?.image_url as string} />
       )}

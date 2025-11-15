@@ -22,6 +22,7 @@ import {
 import { supabase } from "@/lib/supabase-client";
 import { Clock, Coffee, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import LoadingPage from "../loading";
 
 interface WorkingHour {
@@ -187,6 +188,10 @@ export default function WorkingHoursPage() {
         upsertWorkingHours(barberId, activeHours),
         createBreak(barberId, breaks),
       ]);
+
+      toast.success("Horários atualizados!", {
+        description: "Sua agenda já está disponível para os clientes.",
+      });
 
       console.log("Horários salvos com sucesso!");
     } catch (err) {

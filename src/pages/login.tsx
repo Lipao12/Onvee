@@ -43,7 +43,7 @@ export default function Login() {
         .eq("profile_id", user?.id)
         .maybeSingle();
 
-      console.log(barber);
+      //console.log(barber);
 
       if (!barber) {
         navigate("/barber/onbording");

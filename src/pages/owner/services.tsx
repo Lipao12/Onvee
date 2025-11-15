@@ -69,7 +69,7 @@ export default function ManageServicesPage() {
       setServices(data || []);
     } catch (error) {
       console.error("Erro ao buscar serviços:", error);
-      toast.message("Erro", {
+      toast.error("Erro", {
         description: "Não foi possível carregar os serviços",
       });
     } finally {
@@ -105,7 +105,7 @@ export default function ManageServicesPage() {
   // Criar ou atualizar serviço
   async function handleSave() {
     if (!barbershop_id) {
-      toast.message("Erro", { description: "Barbearia não identificada" });
+      toast.error("Erro", { description: "Barbearia não identificada" });
       return;
     }
 
@@ -134,7 +134,7 @@ export default function ManageServicesPage() {
           .eq("id", editingService.id);
 
         if (error) throw error;
-        toast.message("Sucesso", {
+        toast.success("Sucesso", {
           description: "Serviço atualizado com sucesso!",
         });
       } else {
@@ -150,7 +150,7 @@ export default function ManageServicesPage() {
       fetchServices();
     } catch (error) {
       console.error("Erro ao salvar serviço:", error);
-      toast.message("Erro", {
+      toast.error("Erro", {
         description: "Não foi possível salvar o serviço",
       });
     } finally {
@@ -171,7 +171,7 @@ export default function ManageServicesPage() {
       fetchServices();
     } catch (error) {
       console.error("Erro ao excluir serviço:", error);
-      toast.message("Erro", {
+      toast.error("Erro", {
         description: "Não foi possível excluir o serviço",
       });
     }
@@ -210,7 +210,7 @@ export default function ManageServicesPage() {
 
     // Verificar se é imagem
     if (!file.type.startsWith("image/")) {
-      toast.message("Erro", {
+      toast.error("Erro", {
         description: "Por favor, selecione um arquivo de imagem",
       });
 
@@ -219,7 +219,7 @@ export default function ManageServicesPage() {
 
     // Verificar tamanho (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.message("Erro", {
+      toast.error("Erro", {
         description: "A imagem deve ter no máximo 5MB",
       });
 
