@@ -23,6 +23,7 @@ import {
   Plus,
   Scissors,
   Trash2,
+  User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -37,7 +38,7 @@ interface Service {
 }
 
 export default function ManageBarbersPage() {
-  const [services, setServices] = useState<Service[]>([]);
+  const [barbers, setBarbers] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -66,7 +67,8 @@ export default function ManageBarbersPage() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setServices(data || []);
+      console.log(data);
+      setBarbers(data || []);
     } catch (error) {
       console.error("Erro ao buscar serviços:", error);
       toast.error("Erro", {
@@ -245,15 +247,15 @@ export default function ManageBarbersPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Serviços da Barbearia
+            Barbeiros Cadastrados na Barbearia
           </h1>
           <p className="text-muted-foreground mt-2">
-            Gerencie os serviços oferecidos pela sua barbearia
+            Gerencie todos os barbeiros que estão trabalhando na sua barbearia
           </p>
         </div>
         <Button onClick={() => setShowDialog(true)} className="gap-2" size="lg">
           <Plus className="w-4 h-4" />
-          Novo Serviço
+          Novo Barbeiro
         </Button>
       </div>
 
@@ -262,37 +264,37 @@ export default function ManageBarbersPage() {
         <div className="flex justify-center items-center py-20">
           <Loader2 className="animate-spin w-8 h-8" />
         </div>
-      ) : services.length === 0 ? (
+      ) : barbers.length === 0 ? (
         <Card className="text-center py-16">
           <CardContent className="space-y-4">
-            <Scissors className="w-16 h-16 mx-auto text-muted-foreground" />
+            <User className="w-16 h-16 mx-auto text-muted-foreground" />
             <div>
               <h3 className="text-lg font-semibold">
-                Nenhum serviço cadastrado
+                Nenhum Barbeiro Cadastrado
               </h3>
               <p className="text-muted-foreground mt-1">
-                Comece adicionando seu primeiro serviço à barbearia
+                Adicione seu primeiro barbeiro à barbearia
               </p>
             </div>
             <Button onClick={() => setShowDialog(true)} className="gap-2">
               <Plus className="w-4 h-4" />
-              Criar Primeiro Serviço
+              Cadastrar Primeiro Trabalhador
             </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
+          {barbers.map((barber) => (
             <Card
-              key={service.id}
+              key={barber.id}
               className="overflow-hidden hover:shadow-lg transition-shadow active:scale-98"
             >
               {/* Container da imagem com badge */}
               <div className="aspect-5/3 relative bg-muted">
-                {service.image_url ? (
+                {barber.image_url ? (
                   <img
-                    src={service.image_url}
-                    alt={service.name}
+                    src={barber.image_url}
+                    alt={barber.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -309,7 +311,7 @@ export default function ManageBarbersPage() {
                     className="bg-black/80 text-white backdrop-blur-sm px-2 py-1"
                   >
                     <Clock className="w-3 h-3 mr-1" />
-                    {service.duration_minutes}min
+                    {barber.duration_minutes}min
                   </Badge>
                 </div>
               </div>
@@ -319,17 +321,17 @@ export default function ManageBarbersPage() {
                 {/* Cabeçalho com nome e preço */}
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-base leading-tight flex-1 mr-2">
-                    {service.name}
+                    {barber.name}
                   </h3>
                   <span className="text-lg font-bold text-green-600 whitespace-nowrap">
-                    {formatPrice(service.price)}
+                    {formatPrice(barber.price)}
                   </span>
                 </div>
 
                 {/* Descrição (se existir) */}
-                {service.description && (
+                {barber.description && (
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
-                    {service.description}
+                    {barber.description}
                   </p>
                 )}
 
@@ -338,7 +340,7 @@ export default function ManageBarbersPage() {
                   {/* Indicador visual de duração (redundante mas útil) */}
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="w-3 h-3" />
-                    <span>{service.duration_minutes} minutos</span>
+                    <span>{barber.duration_minutes} minutos</span>
                   </div>
 
                   {/* Botões de ação */}
@@ -346,7 +348,7 @@ export default function ManageBarbersPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleEdit(service)}
+                      onClick={() => handleEdit(barber)}
                       className="h-8 w-8 p-0"
                     >
                       <Edit className="w-3 h-3" />
@@ -354,7 +356,7 @@ export default function ManageBarbersPage() {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => handleDelete(barber.id)}
                       className="h-8 w-8 p-0"
                     >
                       <Trash2 className="w-3 h-3" />

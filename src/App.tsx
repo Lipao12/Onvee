@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import BottomBar from "./components/bottom-bar";
@@ -6,7 +5,6 @@ import { useDynamicFavicon } from "./components/dynamic-favicon";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
-import { supabase } from "./lib/supabase-client";
 import { useIsMobile } from "./lib/use-mobile";
 import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
@@ -17,6 +15,7 @@ import ClientHomePage from "./pages/client/home";
 import MakeAppointment from "./pages/client/make-appointment";
 import UserBarberCode from "./pages/client/user-barber-code";
 import Login from "./pages/login";
+import SettingsPage from "./pages/owner/configurations";
 import ManageBarbersPage from "./pages/owner/manage-barbers-page";
 import ManageServicesPage from "./pages/owner/services";
 
@@ -123,6 +122,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <ManageBarbersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/config-barbershop"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />

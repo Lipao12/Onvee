@@ -98,7 +98,7 @@ export default function BottomBar() {
     {
       name: "Configurações",
       icon: Settings,
-      path: "/owner/settings",
+      path: "/owner/config-barbershop",
       roles: ["owner"],
     },
 

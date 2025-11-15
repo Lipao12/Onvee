@@ -229,7 +229,7 @@ export default function WorkingHoursPage() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto pb-20 px-6 space-y-6">
+    <div className="container max-w-4xl mx-auto pb-26 px-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

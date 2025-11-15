@@ -25,9 +25,10 @@ export default function AppLayout() {
   }
 
   const isHomePage = location.pathname === "/home";
+  const isOnboardingPage = location.pathname === "/barber/onboarding";
   return (
     <div
-      className={`pt-16 flex flex-col ${
+      className={`${isOnboardingPage ? "" : "pt-16"} flex flex-col ${
         isHomePage ? "h-screen justify-center" : "min-h-screen"
       }`}
     >

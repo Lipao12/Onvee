@@ -21,17 +21,17 @@ export default function ClientHomePage() {
       "MakeAppointment must be used within a ClientAppointmentProvider"
     );
   }
-  const { shop } = clientAppointment;
+  const { shop, barbershop_config } = clientAppointment;
   const navigator = useNavigate();
 
   const goTo = (path: string) => {
     navigator(path);
   };
+  console.log("Barbershop Config:", barbershop_config);
 
   if (loading) {
     return <LoadingPage />;
   }
-
   return (
     <div className="flex flex-1 flex-col justify-center items-center space-y-8 pb-24">
       <div className="relative">
@@ -54,14 +54,14 @@ export default function ClientHomePage() {
         </div>
       </div>
 
-      {shop?.instagram_url && (
+      {barbershop_config?.instagram_user && (
         <Button
           variant="outline"
           className="mt-6 w-full max-w-xs  gap-2 group"
           onClick={() =>
             window.open(
-              shop.instagram_url
-                ? "https://" + shop.instagram_url
+              barbershop_config.instagram_user
+                ? "https://instagram.com/" + barbershop_config.instagram_user
                 : "https://instagram.com",
               "_blank"
             )

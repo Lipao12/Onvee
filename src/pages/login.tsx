@@ -46,7 +46,7 @@ export default function Login() {
       //console.log(barber);
 
       if (!barber) {
-        navigate("/barber/onbording");
+        navigate("/barber/onboarding");
         return;
       }
 

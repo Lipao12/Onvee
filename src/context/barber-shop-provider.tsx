@@ -17,17 +17,34 @@ export interface AvailableSlot {
   barberId: string;
 }
 
+export interface BarbershopConfig {
+  id: string;
+  barbershop_id: string;
+  created_at: string;
+  updated_at: string;
+  main_color: string | null;
+  theme: string;
+  instagram_user?: string;
+  whatsapp_number?: string;
+  appointment_interval?: number;
+  business_hours?: any;
+}
+
 type ShopId = string | null;
 
 interface BarberShopContextProps {
   shop: BarberShop | null;
   services: Service[];
   barbers: Barber[];
+  barbershop_config: any;
   loading: boolean;
   error: string | null;
   setShop: (shop: BarberShop) => void;
   fetchShopData: (shopId: ShopId) => void;
   fetchBarberAvailability: any;
+  updateBarbershopConfig: (
+    configData: Partial<BarbershopConfig>
+  ) => Promise<void>;
 }
 
 const BarberShopContext = createContext<BarberShopContextProps | undefined>(
@@ -39,6 +56,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
   const [shop, setShop] = useState<BarberShop | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [barbershop_config, setBarbersshopConfig] = useState();
   const [loading, setLoading] = useState(false);
   //const [lastFetch, setLastFetch] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
@@ -79,12 +97,15 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
             .order("price", { ascending: true }),
           supabase
             .from("barbers")
-            .select("id, barbershop_id, profile_id, bio, rating, is_active")
+            .select(
+              `id, barbershop_id, profile_id(full_name, image_url, phone)
+              , bio, rating, is_active`
+            )
             .eq("barbershop_id", shopId)
             .eq("is_active", true),
           supabase
             .from("barbershop_config")
-            .select("theme")
+            .select("*")
             .eq("barbershop_id", shopId)
             .single(),
         ]);
@@ -98,43 +119,17 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
 
       const barbersData = barberRes.data || [];
 
-      let profileMap: Record<string, any> = {};
+      const enrichedBarbers = barbersData.map((b: any) => ({
+        ...b,
+        ...(b.profile_id
+          ? {
+              full_name: b.profile_id.full_name,
+              image_url: b.profile_id.image_url,
+              phone: b.profile_id.phone,
+            }
+          : {}),
+      }));
 
-      const profileIds = barbersData
-        .map((b: any) => b.profile_id)
-        .filter((id: string | null) => id != null);
-
-      if (profileIds.length > 0) {
-        const { data: profiles, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, full_name, image_url")
-          .in("id", profileIds);
-
-        console.log("profiles: ", profiles);
-
-        if (profileError) {
-          console.warn(
-            "Erro ao carregar perfis (pode ser auth):",
-            profileError
-          );
-        } else if (profiles) {
-          profileMap = Object.fromEntries(profiles.map((p: any) => [p.id, p]));
-        }
-      }
-
-      const enrichedBarbers = barbersData.map((b: any) => {
-        const profile = b.profile_id ? profileMap[b.profile_id] || null : null;
-        return {
-          ...b,
-          ...(profile
-            ? {
-                full_name: profile.full_name,
-                image_url: profile.image_url,
-                phone: profile.phone,
-              }
-            : {}),
-        };
-      });
       const data = {
         shop: shopRes.data,
         services: serviceRes.data || [],
@@ -148,6 +143,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
       setShop(shopRes.data);
       setServices(serviceRes.data || []);
       setBarbers(enrichedBarbers);
+      setBarbersshopConfig(barbershopConfigRes.data);
     } catch (err) {
       console.error("Erro fatal no fetchShopData:", err);
       setError(err instanceof Error ? err.message : "Erro ao carregar");
@@ -294,17 +290,84 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     [] // Dependências: supabase é estável
   );
 
+  const updateBarbershopConfig = useCallback(
+    async (configData: Partial<BarbershopConfig>) => {
+      if (!shop?.id) throw new Error("Nenhuma barbearia selecionada");
+
+      try {
+        setLoading(true);
+
+        // Verifica se já existe configuração
+        const { data: existingConfig } = await supabase
+          .from("barbershop_config")
+          .select("id")
+          .eq("barbershop_id", shop.id)
+          .single();
+
+        let result;
+
+        const enviar = {
+          main_color: configData.main_color,
+          theme: configData.theme,
+          instagram_user: configData.instagram_user,
+        };
+
+        if (existingConfig) {
+          result = await supabase
+            .from("barbershop_config")
+            .update({
+              ...enviar,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", existingConfig.id)
+            .select()
+            .single();
+        } else {
+          // Cria nova configuração
+          result = await supabase
+            .from("barbershop_config")
+            .insert({
+              barbershop_id: shop.id,
+              ...enviar,
+            })
+            .select()
+            .single();
+        }
+
+        if (result.error) throw result.error;
+
+        // Atualiza o tema se foi alterado
+        if (enviar.theme) {
+          changeTheme(enviar.theme);
+        }
+
+        setBarbersshopConfig(result.data);
+
+        // Limpa cache para forçar recarregamento na próxima vez
+        cacheRef.current.delete(shop.id);
+      } catch (error) {
+        console.error("Erro ao atualizar configurações:", error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [shop?.id]
+  );
+
   return (
     <BarberShopContext.Provider
       value={{
         shop,
         barbers,
         services,
+        barbershop_config,
         loading,
         error,
         setShop,
         fetchShopData,
         fetchBarberAvailability,
+        updateBarbershopConfig,
       }}
     >
       {children}
