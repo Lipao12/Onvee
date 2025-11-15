@@ -8,7 +8,7 @@ import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
-import "../barber-code.css";
+import "../../barber-code.css";
 
 export default function UserBarberCode() {
   const [barberCode, setBarberCode] = useState("");
@@ -137,7 +137,7 @@ export default function UserBarberCode() {
               navigator("/login");
             }}
             variant={"outline"}
-            className="mt-5 w-full"
+            className="mt-5 w-full text-gray-800 bg-neutral-100"
           >
             Sou berbeiro
           </Button>

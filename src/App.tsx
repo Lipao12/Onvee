@@ -16,7 +16,7 @@ import MakeAppointment from "./pages/client/make-appointment";
 import ClientHomePage from "./pages/home";
 import Login from "./pages/login";
 import ManageServicesPage from "./pages/owner/services";
-import UserBarberCode from "./pages/user-barber-code";
+import UserBarberCode from "./pages/client/user-barber-code";
 
 export default function App() {
   const isMobile = useIsMobile();

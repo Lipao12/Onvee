@@ -59,7 +59,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen px-4 flex items-center justify-center bg-[url('../../public/bg1.jpeg')] bg-cover bg-center relative">
+    <div className="min-h-screen px-4 flex items-center justify-center bg-[url('/bg1.jpeg')] bg-cover bg-center relative">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
       <Card className="w-full max-w-md relative z-10 bg-neutral-100 dark:bg-neutral-900 shadow-[0_0_25px_rgba(0,0,0,0.6)] rounded-2xl">
