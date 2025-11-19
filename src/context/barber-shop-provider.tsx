@@ -3,12 +3,12 @@ import type { Barber } from "@/types/barber";
 import type { BarberShop } from "@/types/barber-shop";
 import type { Service } from "@/types/service";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-  type ReactNode,
+    createContext,
+    useCallback,
+    useContext,
+    useRef,
+    useState,
+    type ReactNode,
 } from "react";
 
 export interface AvailableSlot {
@@ -28,6 +28,9 @@ export interface BarbershopConfig {
   whatsapp_number?: string;
   appointment_interval?: number;
   business_hours?: any;
+  name: string;
+  address: string;
+  image_url: string;
 }
 
 type ShopId = string | null;
@@ -116,6 +119,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
       if (barbershopConfigRes.error) throw barbershopConfigRes.error;
 
       changeTheme(barbershopConfigRes.data.theme);
+      applyThemeColors(barbershopConfigRes.data.main_color);
 
       const barbersData = barberRes.data || [];
 
@@ -160,6 +164,30 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     root.classList.remove("theme-default", "theme-vintage");
     root.classList.add(`theme-${theme}`);
     localStorage.setItem("app-theme", theme);
+  };
+
+  const applyThemeColors = (color: string | null) => {
+    if (!color) return;
+
+    const root = document.documentElement;
+    // Assuming color is in hex format, we might need to convert to oklch if we were strictly following the new tailwind 4 theme system
+    // But since we are using inline styles for dynamic overrides, hex works for many things, 
+    // BUT the current css uses oklch for --primary etc.
+    // However, setting the variable on style attribute overrides the class definition.
+    // If the user provides a hex color, we can try to use it directly.
+    // Note: Tailwind 4 variables like --primary are often used with opacity modifiers (e.g. bg-primary/50)
+    // which requires the variable to be just the color channels if using the old method, 
+    // or a valid color value if using the new CSS variables.
+    // Let's try setting it directly. If it breaks opacity, we might need a hex-to-oklch converter or similar.
+    // For now, let's assume simple usage.
+    
+    root.style.setProperty("--primary", color);
+    root.style.setProperty("--ring", color);
+    root.style.setProperty("--step-active", color);
+    root.style.setProperty("--step-current", color); // Or a lighter version?
+    
+    // Also set sidebar primary if needed
+    root.style.setProperty("--sidebar-primary", color);
   };
 
   const fetchBarberAvailability = useCallback(
@@ -296,54 +324,98 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
 
       try {
         setLoading(true);
+        const updates = [];
+        const now = new Date().toISOString();
 
-        // Verifica se já existe configuração
+        // Atualiza barbershops (nome, endereço, imagem)
+        if (configData.name || configData.address || configData.image_url) {
+          updates.push(
+            supabase
+              .from("barbershops")
+              .update({
+                ...(configData.name && { name: configData.name }),
+                ...(configData.address && { address: configData.address }),
+                ...(configData.image_url && {
+                  image_url: configData.image_url,
+                }),
+              })
+              .eq("id", shop.id)
+          );
+        }
+
+        // Verifica se já existe config
         const { data: existingConfig } = await supabase
           .from("barbershop_config")
           .select("id")
           .eq("barbershop_id", shop.id)
-          .single();
+          .maybeSingle();
 
-        let result;
+        // Atualiza ou cria config
+        if (
+          configData.main_color ||
+          configData.theme ||
+          configData.instagram_user
+        ) {
+          const configPayload = {
+            ...(configData.main_color && { main_color: configData.main_color }),
+            ...(configData.theme && { theme: configData.theme }),
+            ...(configData.instagram_user && {
+              instagram_user: configData.instagram_user,
+            }),
+            updated_at: now,
+          };
 
-        const enviar = {
-          main_color: configData.main_color,
-          theme: configData.theme,
-          instagram_user: configData.instagram_user,
-        };
-
-        if (existingConfig) {
-          result = await supabase
-            .from("barbershop_config")
-            .update({
-              ...enviar,
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", existingConfig.id)
-            .select()
-            .single();
-        } else {
-          // Cria nova configuração
-          result = await supabase
-            .from("barbershop_config")
-            .insert({
-              barbershop_id: shop.id,
-              ...enviar,
-            })
-            .select()
-            .single();
+          if (existingConfig) {
+            updates.push(
+              supabase
+                .from("barbershop_config")
+                .update(configPayload)
+                .eq("id", existingConfig.id)
+            );
+          } else {
+            updates.push(
+              supabase.from("barbershop_config").insert({
+                barbershop_id: shop.id,
+                ...configPayload,
+              })
+            );
+          }
         }
 
-        if (result.error) throw result.error;
-
-        // Atualiza o tema se foi alterado
-        if (enviar.theme) {
-          changeTheme(enviar.theme);
+        // ⭐ CORREÇÃO PRINCIPAL: sempre executar os updates
+        if (updates.length > 0) {
+          const results = await Promise.all(updates);
+          const hasError = results.some((r) => r.error);
+          if (hasError) {
+            const errors = results.map((r) => r.error).filter(Boolean);
+            throw new Error(JSON.stringify(errors));
+          }
         }
 
-        setBarbersshopConfig(result.data);
+        // Recarrega tudo
+        const [updatedShop, updatedConfig] = await Promise.all([
+          supabase.from("barbershops").select("*").eq("id", shop.id).single(),
+          supabase
+            .from("barbershop_config")
+            .select("*")
+            .eq("barbershop_id", shop.id)
+            .maybeSingle(),
+        ]);
 
-        // Limpa cache para forçar recarregamento na próxima vez
+        if (updatedShop.error) throw updatedShop.error;
+
+        if (configData.theme) {
+          changeTheme(configData.theme);
+        }
+        if (configData.main_color) {
+          applyThemeColors(configData.main_color);
+        }
+
+        setShop(updatedShop.data);
+        if (updatedConfig.data) {
+          setBarbersshopConfig(updatedConfig.data);
+        }
+
         cacheRef.current.delete(shop.id);
       } catch (error) {
         console.error("Erro ao atualizar configurações:", error);
