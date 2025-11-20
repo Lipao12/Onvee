@@ -63,7 +63,7 @@ export default function Login() {
         .single();
 
       if (barbershop?.admin_id === user.id) {
-        navigate("/owner/manage-services");
+        navigate("/owner/dashboard");
         return;
       }
 

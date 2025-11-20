@@ -16,6 +16,7 @@ import MakeAppointment from "./pages/client/make-appointment";
 import UserBarberCode from "./pages/client/user-barber-code";
 import Login from "./pages/login";
 import SettingsPage from "./pages/owner/configurations";
+import OwnerDashboard from "./pages/owner/dashboard";
 import ManageBarbersPage from "./pages/owner/manage-barbers-page";
 import ManageServicesPage from "./pages/owner/services";
 
@@ -135,6 +136,13 @@ export default function App() {
           />
         </Route>
         <Route element={<AppLayout />}>
+          <Route path="/barber/dashboard" element={<Dashboard />} />
+          <Route path="/barber/schedule" element={<Dashboard />} />
+          <Route path="/barber/working-hours" element={<WorkingHoursPage />} />
+          
+          {/* Owner Routes */}
+          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+          <Route path="/owner/manage-barbers" element={<ManageBarbersPage />} />
           <Route path="/home" element={<ClientHomePage />} />
           <Route path="/services" element={<MakeAppointment />} />
           <Route path="/newappointment" element={<MakeAppointment />} />
