@@ -1,8 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -264,7 +263,7 @@ export default function ManageServicesPage() {
         </div>
       ) : services.length === 0 ? (
         <Card className="text-center py-16">
-          <CardContent className="space-y-4">
+          <div className="p-6 space-y-4">
             <Scissors className="w-16 h-16 mx-auto text-muted-foreground" />
             <div>
               <h3 className="text-lg font-semibold">
@@ -278,90 +277,86 @@ export default function ManageServicesPage() {
               <Plus className="w-4 h-4" />
               Criar Primeiro Serviço
             </Button>
-          </CardContent>
+          </div>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service) => (
             <Card
               key={service.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow active:scale-98"
+              className="group relative overflow-hidden border-none shadow-lg transition-all hover:shadow-xl hover:-translate-y-1 bg-card"
             >
-              {/* Container da imagem com badge */}
-              <div className="aspect-5/3 relative bg-muted">
+              {/* Imagem com Overlay */}
+              <div className="aspect-[4/3] relative overflow-hidden">
                 {service.image_url ? (
                   <img
                     src={service.image_url}
                     alt={service.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-amber-800 to-amber-600">
-                    <Scissors className="w-8 h-8 text-white" />
+                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-neutral-800 to-neutral-600">
+                    <Scissors className="w-10 h-10 text-white/50" />
                   </div>
                 )}
+                
+                {/* Gradiente Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-90" />
 
-                {/* Badge de duração melhorado */}
-                <div className="absolute top-2 right-2">
-                  <Badge
+                {/* Preço e Duração (Sobre a imagem) */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <h3 className="font-bold text-lg leading-tight mb-1 text-white">
+                        {service.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-white/80">
+                        <Clock className="w-3 h-3" />
+                        <span>{service.duration_minutes} min</span>
+                      </div>
+                    </div>
+                    <span className="text-xl font-bold text-primary-foreground bg-primary/90 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm">
+                      {formatPrice(service.price)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Ações (Aparecem no hover ou sempre visíveis em mobile) */}
+                <div className="absolute top-3 right-3 flex gap-2 z-20">
+                  <Button
+                    size="icon"
                     variant="secondary"
-                    className="bg-black/80 text-white backdrop-blur-sm px-2 py-1"
+                    className="h-8 w-8 rounded-full bg-white/90 hover:bg-white text-black shadow-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(service);
+                    }}
                   >
-                    <Clock className="w-3 h-3 mr-1" />
-                    {service.duration_minutes}min
-                  </Badge>
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    className="h-8 w-8 rounded-full shadow-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(service.id);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
 
-              {/* Conteúdo do card */}
-              <CardContent className="p-3">
-                {/* Cabeçalho com nome e preço */}
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-base leading-tight flex-1 mr-2">
-                    {service.name}
-                  </h3>
-                  <span className="text-lg font-bold text-green-600 whitespace-nowrap">
-                    {formatPrice(service.price)}
-                  </span>
-                </div>
-
-                {/* Descrição (se existir) */}
-                {service.description && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
+              {/* Descrição (Opcional, fora da imagem) */}
+              {service.description && (
+                <div className="p-4 bg-card border-t border-border/50">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
                     {service.description}
                   </p>
-                )}
-
-                {/* Rodapé com ações */}
-                <div className="flex items-center justify-between">
-                  {/* Indicador visual de duração (redundante mas útil) */}
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    <span>{service.duration_minutes} minutos</span>
-                  </div>
-
-                  {/* Botões de ação */}
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(service)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Edit className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(service.id)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  </div>
                 </div>
-              </CardContent>
+              )}
             </Card>
           ))}
         </div>

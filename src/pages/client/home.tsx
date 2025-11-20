@@ -38,7 +38,7 @@ export default function ClientHomePage() {
         <img
           src={shop?.image_url ?? "/placeholder-barber.jpg"}
           alt={shop?.name}
-          className="h-36 w-36 rounded-full object-cover ring-4 ring-accent/30shadow-lg transition-transform hover:scale-105"
+          className="h-36 w-36 rounded-full object-cover ring-4 ring-accent/30 shadow-lg transition-transform hover:scale-105"
         />
         {/* <span className="absolute -bottom-1 right-0 rounded-full bg-green-600 px-2 py-0.5 text-xs text-white">Aberto</span> */}
       </div>
