@@ -1,4 +1,5 @@
 // src/layouts/AppLayout.tsx
+import BottomBar from "@/components/bottom-bar";
 import { useBarberShop } from "@/context/barber-shop-provider";
 import LoadingPage from "@/pages/loading";
 import { useEffect } from "react";
@@ -33,6 +34,7 @@ export default function AppLayout() {
       }`}
     >
       <Outlet />
+      <BottomBar />
     </div>
   );
 }

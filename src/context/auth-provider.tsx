@@ -133,6 +133,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event) => {
+      console.log("Auth event:", event);
+      
       if (event === "SIGNED_OUT") {
         localStorage.removeItem("client_session");
         setAuthState({
@@ -140,6 +142,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isLoading: false,
           isAuthenticated: false,
         });
+      } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        // Re-initialize auth to get role and details
+        initializeAuth();
       }
     });
 

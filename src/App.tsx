@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
-import BottomBar from "./components/bottom-bar";
 import { useDynamicFavicon } from "./components/dynamic-favicon";
 import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
@@ -143,7 +142,6 @@ export default function App() {
         <Route path="/" element={<UserBarberCode />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {isMobile && !hideBottomBar && <BottomBar />}
     </div>
   );
 }
