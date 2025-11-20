@@ -1,31 +1,27 @@
-import { supabase } from "@/lib/supabase-client";
-import { useEffect, useState, type JSX } from "react";
+import { useAuth } from "@/context/auth-provider";
 import { Navigate } from "react-router-dom";
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}
 
 export default function ProtectedRoute({
   children,
-}: {
-  children: JSX.Element;
-}) {
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  allowedRoles,
+}: ProtectedRouteProps) {
+  const { user, isAuthenticated, isLoading } = useAuth();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+  if (isLoading) return <div className="p-6 text-center">Carregando...</div>;
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-      }
-    );
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/" replace />;
+  }
 
-    return () => listener.subscription.unsubscribe();
-  }, []);
+  if (allowedRoles && user.role && !allowedRoles.includes(user.role)) {
+    // User authorized but not for this role, redirect to home or dashboard
+    return <Navigate to="/home" replace />;
+  }
 
-  if (loading) return <div className="p-6 text-center">Carregando...</div>;
-  if (!session) return <Navigate to="/login" replace />;
-  return children;
+  return <>{children}</>;
 }

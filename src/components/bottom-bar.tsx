@@ -1,15 +1,15 @@
 import { useAuth, type UserRole } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
 import {
-    Calendar,
-    Clock,
-    HomeIcon,
-    LayoutDashboard,
-    LogOut,
-    Plus,
-    Scissors,
-    Settings,
-    Users,
+  Calendar,
+  Clock,
+  HomeIcon,
+  LayoutDashboard,
+  LogOut,
+  Plus,
+  Scissors,
+  Settings,
+  Users,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 interface TabConfig {
@@ -72,7 +72,7 @@ export default function BottomBar() {
     {
       name: "Agenda",
       icon: Calendar,
-      path: "/barber/schedule",
+      path: "/agenda",
       roles: ["barber", "owner"],
     },
     {

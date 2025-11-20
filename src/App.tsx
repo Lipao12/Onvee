@@ -5,6 +5,7 @@ import Header from "./components/header";
 import ProtectedRoute from "./components/protected-route";
 import { useBarberShop } from "./context/barber-shop-provider";
 import { useIsMobile } from "./lib/use-mobile";
+import AgendaPage from "./pages/agenda/agenda-page";
 import AppLayout from "./pages/app-layout-client";
 import Dashboard from "./pages/barber/dashboard";
 import OnboardingWizard from "./pages/barber/onboard";
@@ -138,7 +139,15 @@ export default function App() {
           <Route path="/services" element={<MakeAppointment />} />
           <Route path="/newappointment" element={<MakeAppointment />} />
           <Route path="/appointments" element={<AppointmentHistoric />} />
-        </Route>
+        <Route
+          path="/agenda"
+          element={
+            <ProtectedRoute allowedRoles={["barber", "owner"]}>
+              <AgendaPage />
+            </ProtectedRoute>
+          }
+          />
+          </Route>
         <Route path="/" element={<UserBarberCode />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
