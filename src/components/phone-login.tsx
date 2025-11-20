@@ -5,7 +5,11 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase-client";
 import { useState } from "react";
 
-export default function PhoneLogin() {
+interface PhoneLoginProps {
+  onLoginSuccess?: () => void;
+}
+
+export default function PhoneLogin({ onLoginSuccess }: PhoneLoginProps) {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "verify">("phone");
@@ -40,6 +44,29 @@ export default function PhoneLogin() {
       });
       if (error) throw error;
       setMessage("Login realizado com sucesso!");
+      
+      // Save client session for persistence if needed (though supabase handles auth)
+      // But the auth provider looks for "client_session" in localStorage for phone auth?
+      // Let's check auth-provider.tsx again. 
+      // It checks session.user first. If not, it checks localStorage.
+      // Since we are doing real auth here, session.user should be set.
+      // However, to be safe and consistent with the "client" role logic in auth-provider:
+      // The auth-provider sets role="client" if it finds "client_session".
+      // But if we have a real supabase session, we might need to ensure the role is correct.
+      // In auth-provider: if (!profile) -> role is not set in context user object explicitly unless we handle it.
+      // Let's set the localStorage just in case the auth-provider logic relies on it for "client" role 
+      // when there is no profile table entry for this user yet.
+      
+      const clientData = {
+        phone,
+        role: "client",
+        // barbershop_id? We might not know it yet or it's global.
+      };
+      localStorage.setItem("client_session", JSON.stringify(clientData));
+
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
     } catch (err: any) {
       setMessage(`Erro ao verificar código: ${err.message}`);
     } finally {
@@ -51,7 +78,7 @@ export default function PhoneLogin() {
     <div className="flex justify-center items-center">
       <Card className="w-[340px] p-4">
         <CardHeader>
-          <h1>Você não está autenticado, por favor, siga os passos</h1>
+          <h1>Para confirmar seu agendamento, precisamos verificar seu número de telefone.</h1>
         </CardHeader>
         <CardContent className="space-y-4">
           {step === "phone" && (

@@ -82,14 +82,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let barbershop_id: string | undefined;
 
         // Check if user is a barber
-        /*const { data: barber } = await supabase
+        const { data: barber } = await supabase
           .from("barbers")
           .select("id, barbershop_id")
           .eq("profile_id", profile.id)
           .single();
 
         if (barber) {
-          role = "barber";
+          //role = "barber";
           barbershop_id = barber.barbershop_id;
 
           // Check if barber is also owner
@@ -100,9 +100,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .single();
 
           if (barbershop?.admin_id === session.user.id) {
-            role = "owner";
+             //role = "owner";
+             // Override profile role if owner
+             profile.app_role = "owner";
           }
-        }*/
+        }
 
         setAuthState({
           user: {

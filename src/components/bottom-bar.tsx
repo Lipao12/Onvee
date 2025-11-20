@@ -1,15 +1,15 @@
 import { useAuth, type UserRole } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
 import {
-  Calendar,
-  Clock,
-  HomeIcon,
-  LayoutDashboard,
-  LogOut,
-  Plus,
-  Scissors,
-  Settings,
-  Users,
+    Calendar,
+    Clock,
+    HomeIcon,
+    LayoutDashboard,
+    LogOut,
+    Plus,
+    Scissors,
+    Settings,
+    Users,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 interface TabConfig {
@@ -23,7 +23,7 @@ export default function BottomBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   const handleNavigate = async (path: string) => {
     if (path === "/logout") {
@@ -106,15 +106,33 @@ export default function BottomBar() {
       name: "Sair",
       icon: LogOut,
       path: "/logout",
-      roles: ["client", "unauthenticated", "barber", "owner"],
+      roles: ["client", "barber", "owner"],
     },
   ];
   const handleLogout = async () => {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("barbershop_id");
     supabase.auth.signOut();
   };
 
   // Filtrar abas baseado no role do usuário
   const getFilteredTabs = () => {
+    // 1. Se estiver carregando, não mostra nada ou mostra skeleton (aqui retornamos vazio por enquanto)
+    if (isLoading) return [];
+
+    // 2. Se estiver em páginas de cliente, força a barra de cliente
+    const clientRoutes = ["/home", "/newappointment", "/appointments", "/services"];
+    const isClientPage = clientRoutes.some(route => location.pathname.startsWith(route));
+
+    if (isClientPage) {
+       // Mostra abas de cliente + Sair (se autenticado)
+       return allTabs.filter(tab => {
+         if (tab.name === "Sair" && !isAuthenticated) return false;
+         return tab.roles.includes("client");
+       });
+    }
+
+    // 3. Comportamento padrão baseado no role
     if (!isAuthenticated || !user)
       return allTabs.filter((tab) => tab.roles.includes("unauthenticated"));
 
@@ -123,6 +141,8 @@ export default function BottomBar() {
   };
 
   const tabs = getFilteredTabs();
+
+  if (isLoading) return null; // Ou um skeleton
 
   return (
     <nav

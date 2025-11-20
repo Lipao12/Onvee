@@ -44,7 +44,7 @@ export default function ClientHomePage() {
       </div>
 
       <div className="mt-6 text-center">
-        <h1 className="text-2xl font-bold text-primary md:text-3xl">
+        <h1 className="text-2xl font-bold  md:text-3xl">
           {shop?.name}
         </h1>
 

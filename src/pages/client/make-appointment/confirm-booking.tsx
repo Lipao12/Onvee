@@ -70,16 +70,19 @@ export default function ConfirmBooking({
       </Card>
 
       {!user ? (
+        <div className="space-y-4">
+
+            <PhoneLogin onLoginSuccess={onNext} />
+        </div>
+      ) : (
         <div className="flex justify-center">
           <Button
             onClick={onNext}
-            className="h-12 px-8 text-base font-medium transition"
+            className="h-12 px-8 text-base font-medium transition w-full sm:w-auto"
           >
             Confirmar Agendamento
           </Button>
         </div>
-      ) : (
-        <PhoneLogin />
       )}
     </div>
   );

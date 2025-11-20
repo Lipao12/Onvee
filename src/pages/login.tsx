@@ -39,7 +39,7 @@ export default function Login() {
 
       const { data: barber } = await supabase
         .from("barbers")
-        .select("id")
+        .select("id, barbershop_id")
         .eq("profile_id", user?.id)
         .maybeSingle();
 
@@ -47,6 +47,23 @@ export default function Login() {
 
       if (!barber) {
         navigate("/barber/onboarding");
+        return;
+      }
+
+      // Save barbershop_id to localStorage for AppLayout
+      if (barber.barbershop_id) {
+        localStorage.setItem("barbershop_id", barber.barbershop_id);
+      }
+
+      // Check if owner
+      const { data: barbershop } = await supabase
+        .from("barbershops")
+        .select("admin_id")
+        .eq("id", barber.barbershop_id)
+        .single();
+
+      if (barbershop?.admin_id === user.id) {
+        navigate("/owner/manage-services");
         return;
       }
 

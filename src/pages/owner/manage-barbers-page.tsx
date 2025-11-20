@@ -1,8 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,39 +14,36 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase-client";
 import {
-  Clock,
-  DollarSign,
-  Edit,
   Image as ImageIcon,
   Loader2,
   Plus,
-  Scissors,
   Trash2,
-  User,
+  User
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-interface Service {
+interface Barber {
   id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration_minutes: number;
-  image_url?: string;
+  profile_id: {
+    full_name: string;
+    image_url?: string;
+    phone?: string;
+  };
+  bio: string;
+  is_active: boolean;
+  rating: number;
 }
 
 export default function ManageBarbersPage() {
-  const [barbers, setBarbers] = useState<Service[]>([]);
+  const [barbers, setBarbers] = useState<Barber[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
-  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [editingService, setEditingService] = useState<Barber | null>(null);
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    price: "",
-    duration_minutes: "30",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -62,7 +58,7 @@ export default function ManageBarbersPage() {
     try {
       const { data, error } = await supabase
         .from("barbers")
-        .select("*")
+        .select("*, profile_id(full_name, image_url, phone)")
         .eq("barbershop_id", barbershop_id)
         .order("created_at", { ascending: false });
 
@@ -112,7 +108,7 @@ export default function ManageBarbersPage() {
     }
 
     try {
-      let imageUrl = editingService?.image_url || "";
+      let imageUrl = editingService?.profile_id.image_url || "";
 
       // Upload da nova imagem se houver
       if (imageFile) {
@@ -122,8 +118,6 @@ export default function ManageBarbersPage() {
 
       const payload = {
         ...formData,
-        price: Number(formData.price),
-        duration_minutes: Number(formData.duration_minutes),
         barbershop_id,
         image_url: imageUrl,
         updated_at: new Date().toISOString(),
@@ -161,7 +155,7 @@ export default function ManageBarbersPage() {
   }
 
   // Excluir serviço
-  async function handleDelete(id: string) {
+  /*async function handleDelete(id: string) {
     if (!confirm("Tem certeza que deseja excluir este serviço?")) return;
 
     try {
@@ -177,15 +171,13 @@ export default function ManageBarbersPage() {
         description: "Não foi possível excluir o serviço",
       });
     }
-  }
+  }*/
 
   // Resetar formulário
   const resetForm = () => {
     setFormData({
       name: "",
       description: "",
-      price: "",
-      duration_minutes: "30",
     });
     setImageFile(null);
     setImagePreview("");
@@ -193,17 +185,15 @@ export default function ManageBarbersPage() {
   };
 
   // Abrir dialog para edição
-  const handleEdit = (service: Service) => {
-    setEditingService(service);
+  /*const handleEdit = (barber: Barber) => {
+    setEditingService(barber);
     setFormData({
-      name: service.name,
-      description: service.description,
-      price: String(service.price),
-      duration_minutes: String(service.duration_minutes),
+      name: barber.profile_id.full_name,
+      description: barber.bio,
     });
-    setImagePreview(service.image_url || "");
+    setImagePreview(barber.profile_id.image_url || "");
     setShowDialog(true);
-  };
+  };*/
 
   // Manipular upload de imagem
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,13 +223,8 @@ export default function ManageBarbersPage() {
     setImagePreview(previewUrl);
   };
 
-  // Formatar preço
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(price);
-  };
+
+  console.log("Aqui estçao os barbers: ", barbers);
 
   return (
     <div className="container max-w-6xl mx-auto p-6 pb-24 space-y-6">
@@ -283,84 +268,38 @@ export default function ManageBarbersPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {barbers.map((barber) => (
             <Card
               key={barber.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow active:scale-98"
+              className="cursor-pointer overflow-hidden bg-zinc-800 flex flex-col transition hover:shadow-lg"
             >
-              {/* Container da imagem com badge */}
-              <div className="aspect-5/3 relative bg-muted">
-                {barber.image_url ? (
+              <div className="relative w-full h-32 overflow-hidden">
+                {barber.profile_id.image_url ? (
                   <img
-                    src={barber.image_url}
-                    alt={barber.name}
+                    src={barber.profile_id.image_url}
+                    alt={barber.profile_id.full_name}
                     className="w-full h-full object-cover"
-                    loading="lazy"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-amber-800 to-amber-600">
-                    <Scissors className="w-8 h-8 text-white" />
+                  <div
+                    className="w-full h-full flex items-center justify-center bg-linear-to-br  from-[#FFF]  to-transparent 
+                      dark:from-[#2b2b2b] dark:via-[#4a3c2b] dark:to-[#d7bfa6]"
+                  >
+                    <User className="w-12 h-12 text-white" />
                   </div>
                 )}
-
-                {/* Badge de duração melhorado */}
-                <div className="absolute top-2 right-2">
-                  <Badge
-                    variant="secondary"
-                    className="bg-black/80 text-white backdrop-blur-sm px-2 py-1"
-                  >
-                    <Clock className="w-3 h-3 mr-1" />
-                    {barber.duration_minutes}min
-                  </Badge>
-                </div>
               </div>
 
-              {/* Conteúdo do card */}
-              <CardContent className="p-3">
-                {/* Cabeçalho com nome e preço */}
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-base leading-tight flex-1 mr-2">
-                    {barber.name}
-                  </h3>
-                  <span className="text-lg font-bold text-green-600 whitespace-nowrap">
-                    {formatPrice(barber.price)}
-                  </span>
-                </div>
-
-                {/* Descrição (se existir) */}
-                {barber.description && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
-                    {barber.description}
-                  </p>
-                )}
-
-                {/* Rodapé com ações */}
-                <div className="flex items-center justify-between">
-                  {/* Indicador visual de duração (redundante mas útil) */}
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    <span>{barber.duration_minutes} minutos</span>
-                  </div>
-
-                  {/* Botões de ação */}
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(barber)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Edit className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(barber.id)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
+              <CardContent className="flex flex-col py-4 px-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg font-semibold leading-tight text-white">
+                      {barber.profile_id.full_name}
+                    </CardTitle>
+                    <div className="flex items-center gap-2 text-gray-400 text-sm mt-1">
+                      {barber.bio || "Sem biografia disponível"}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -392,7 +331,7 @@ export default function ManageBarbersPage() {
           <div className="space-y-4">
             {/* Image Upload */}
             <div className="space-y-2">
-              <Label>Imagem do Serviço</Label>
+              <Label>Imagem do Barbeiro</Label>
               <div className="relative border-2 border-dashed rounded-lg p-4 text-center hover:border-primary/60 transition-colors">
                 {imagePreview ? (
                   <div className="relative inline-block">
@@ -437,7 +376,7 @@ export default function ManageBarbersPage() {
 
             {/* Service Details */}
             <div className="space-y-2">
-              <Label htmlFor="name">Nome do Serviço *</Label>
+              <Label htmlFor="name">Nome do Barbeiro *</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -449,7 +388,7 @@ export default function ManageBarbersPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Descrição</Label>
+              <Label htmlFor="description">Biografia</Label>
               <Textarea
                 id="description"
                 value={formData.description}
@@ -461,54 +400,10 @@ export default function ManageBarbersPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="price">Preço (R$) *</Label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.price}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price: e.target.value })
-                    }
-                    className="pl-9"
-                    placeholder="0,00"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="duration">Duração (min) *</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="duration"
-                    type="number"
-                    min="5"
-                    step="5"
-                    value={formData.duration_minutes}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        duration_minutes: e.target.value,
-                      })
-                    }
-                    className="pl-9"
-                  />
-                </div>
-              </div>
-            </div>
-
             <Button
               onClick={handleSave}
               disabled={
                 !formData.name ||
-                !formData.price ||
-                !formData.duration_minutes ||
                 uploading
               }
               className="w-full gap-2"

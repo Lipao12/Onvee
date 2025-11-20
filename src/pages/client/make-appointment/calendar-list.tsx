@@ -230,10 +230,8 @@ export default function CalendarList({
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
 
-            <div className="flex justify-center mt-8">
+                 <div className="flex justify-center mt-8">
               <Button
                 onClick={handleConfirm}
                 className="h-12 px-8 text-base font-medium transition"
@@ -241,6 +239,10 @@ export default function CalendarList({
                 Confirmar Horário
               </Button>
             </div>
+              </div>
+            )}
+
+           
           </CardContent>
         </Card>
       </div>

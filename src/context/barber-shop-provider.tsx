@@ -3,12 +3,12 @@ import type { Barber } from "@/types/barber";
 import type { BarberShop } from "@/types/barber-shop";
 import type { Service } from "@/types/service";
 import {
-    createContext,
-    useCallback,
-    useContext,
-    useRef,
-    useState,
-    type ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+  type ReactNode,
 } from "react";
 
 export interface AvailableSlot {
@@ -42,6 +42,7 @@ interface BarberShopContextProps {
   barbershop_config: any;
   loading: boolean;
   error: string | null;
+  isSaving: boolean;
   setShop: (shop: BarberShop) => void;
   fetchShopData: (shopId: ShopId) => void;
   fetchBarberAvailability: any;
@@ -61,6 +62,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [barbershop_config, setBarbersshopConfig] = useState();
   const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   //const [lastFetch, setLastFetch] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -166,6 +168,24 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("app-theme", theme);
   };
 
+  function darken(hex: string, amount = 0.2) {
+  const num = parseInt(hex.replace("#", ""), 16);
+
+  let r = (num >> 16) & 255;
+  let g = (num >> 8) & 255;
+  let b = num & 255;
+
+  r = Math.max(0, Math.floor(r * (1 - amount)));
+  g = Math.max(0, Math.floor(g * (1 - amount)));
+  b = Math.max(0, Math.floor(b * (1 - amount)));
+
+  const newHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b)
+    .toString(16)
+    .slice(1);
+
+  return newHex;
+}
+
   const applyThemeColors = (color: string | null) => {
     if (!color) return;
 
@@ -181,9 +201,9 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     // Let's try setting it directly. If it breaks opacity, we might need a hex-to-oklch converter or similar.
     // For now, let's assume simple usage.
     
-    root.style.setProperty("--primary", color);
+    root.style.setProperty("--main-color", color);
     root.style.setProperty("--ring", color);
-    root.style.setProperty("--step-active", color);
+    root.style.setProperty("--step-active", darken(color));
     root.style.setProperty("--step-current", color); // Or a lighter version?
     
     // Also set sidebar primary if needed
@@ -323,6 +343,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
       if (!shop?.id) throw new Error("Nenhuma barbearia selecionada");
 
       try {
+        setIsSaving(true);
         setLoading(true);
         const updates = [];
         const now = new Date().toISOString();
@@ -421,6 +442,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         console.error("Erro ao atualizar configurações:", error);
         throw error;
       } finally {
+        setIsSaving(false);
         setLoading(false);
       }
     },
@@ -436,6 +458,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         barbershop_config,
         loading,
         error,
+        isSaving,
         setShop,
         fetchShopData,
         fetchBarberAvailability,

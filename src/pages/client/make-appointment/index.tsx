@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/auth-provider";
 import { useBarberShop } from "@/context/barber-shop-provider";
 import { ClientAppointmentContext } from "@/context/client-appoitment-provider";
 import { createAppointment } from "@/lib/appointments";
@@ -51,6 +52,7 @@ export default function MakeAppointment() {
     serachParams.get("shop") || localStorage.getItem("barbershop_id");
 
   const [currentStep, setCurrentStep] = useState(1);
+  const { user } = useAuth();
 
   const { loading, services, barbers } = useBarberShop();
 
@@ -178,7 +180,7 @@ export default function MakeAppointment() {
                   <div
                     className={`w-7 h-2 rounded-sm mb-1 transition-all ${
                       isCurrent
-                        ? "bg-[var(--step-current)] shadow-[0_0_6px_rgba(59,130,246,0.8)]" //"bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
+                        ? "bg-[var(--step-current)] shadow-[0_0_6px_rgba(var(--step-current),0.8)]" //0_0_6px_rgba(59,130,246,0.8)"bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
                         : isActive
                         ? "bg-[var(--step-active)]" //"bg-blue-600"
                         : "dark:bg-zinc-700 bg-zinc-400"
@@ -209,6 +211,7 @@ export default function MakeAppointment() {
           <ConfirmBooking
             onNext={handleCreatingAppointment}
             info={{ barber: barber, service: service, date: slotDate.start }}
+            user={user as any}
           />
         )}
         {currentStep === 5 && (
