@@ -1,10 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/auth-provider";
+import { useBarberShop } from "@/context/barber-shop-provider";
 import { supabase } from "@/lib/supabase-client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Calendar, DollarSign, Scissors, TrendingUp, User, Users } from "lucide-react";
+import { Calendar, Copy, DollarSign, Scissors, TrendingUp, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import LoadingPage from "../loading";
 
 interface DashboardMetrics {
@@ -23,6 +26,7 @@ interface BarberPerformance {
 
 export default function OwnerDashboard() {
   const { user } = useAuth();
+  const { shop } = useBarberShop()
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     avgTicket: 0,
     totalAppointments: 0,
@@ -41,13 +45,7 @@ export default function OwnerDashboard() {
 
       setLoading(true);
       try {
-        // 1. Get Shop Name
-        const { data: shop } = await supabase
-            .from("barbershops")
-            .select("name")
-            .eq("id", user.id)
-            .single();
-        if (shop) setShopName(shop.name);
+        setShopName(shop?.name || "");
 
         // 2. Get Today's Appointments
         const startOfDay = new Date();
@@ -143,11 +141,34 @@ export default function OwnerDashboard() {
   return (
     <div className="container mx-auto p-4 pb-24 space-y-8">
       {/* Header */}
-      <header>
-        <h1 className="text-2xl font-bold">{shopName || "Minha Barbearia"}</h1>
-        <p className="text-muted-foreground capitalize">
-          {format(today, "EEEE, d 'de' MMMM", { locale: ptBR })}
-        </p>
+      <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{shopName || "Minha Barbearia"}</h1>
+          <p className="text-muted-foreground capitalize">
+            {format(today, "EEEE, d 'de' MMMM", { locale: ptBR })}
+          </p>
+        </div>
+        {shop?.site_url && (
+          <Card className="p-3 flex items-center justify-between gap-3 bg-muted/50 border-dashed">
+            <div className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground block text-xs uppercase tracking-wider mb-0.5">Link de Agendamento</span>
+              <a href={shop?.site_url} target="_blank" rel="noreferrer" className="hover:underline truncate max-w-[200px] block">
+                {shop?.site_url.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={() => {
+                navigator.clipboard.writeText(shop?.site_url as string);
+                toast.success("Link copiado!");
+              }}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </Card>
+        )}
       </header>
 
       {/* Metrics Grid */}

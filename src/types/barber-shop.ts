@@ -6,4 +6,5 @@ export interface BarberShop {
   address: string | null;
   image_url: string | null;
   instagram_url?: string | null;
+  site_url?: string | null;
 }

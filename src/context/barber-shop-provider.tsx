@@ -31,6 +31,7 @@ export interface BarbershopConfig {
   name: string;
   address: string;
   image_url: string;
+  site_url?: string;
 }
 
 type ShopId = string | null;
@@ -136,8 +137,15 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
           : {}),
       }));
 
+      const shop_normalized  = {
+        ...shopRes.data,
+        ...barbershopConfigRes.data,
+      }
+
+      console.log("Normalizado", shop_normalized)
+
       const data = {
-        shop: shopRes.data,
+        shop: shop_normalized,
         services: serviceRes.data || [],
         barbers: enrichedBarbers,
       };
@@ -146,7 +154,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
 
       cacheRef.current.set(shopId, { data, timestamp: Date.now() });
 
-      setShop(shopRes.data);
+      setShop(data.shop);
       setServices(serviceRes.data || []);
       setBarbers(enrichedBarbers);
       setBarbersshopConfig(barbershopConfigRes.data);
