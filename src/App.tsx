@@ -103,14 +103,6 @@ export default function App() {
             }
           />
           <Route
-            path="/barber/onboarding"
-            element={
-              <ProtectedRoute>
-                <OnboardingWizard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/owner/manage-services"
             element={
               <ProtectedRoute>
@@ -135,6 +127,14 @@ export default function App() {
             }
           />
         </Route>
+                  <Route
+            path="/barber/onboarding"
+            element={
+              <ProtectedRoute>
+                <OnboardingWizard />
+              </ProtectedRoute>
+            }
+          />
         <Route element={<AppLayout />}>
           <Route path="/barber/dashboard" element={<Dashboard />} />
           <Route path="/barber/schedule" element={<Dashboard />} />

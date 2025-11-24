@@ -1,17 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
-import { format, getDay, parse, startOfWeek } from "date-fns";
+import { format, getDay, isToday, isTomorrow, parse, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Loader2
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer, type View, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -39,12 +43,13 @@ interface CalendarEvent {
 
 export default function AgendaPage() {
   const { user } = useAuth();
-  const currentUser = user as any; // Cast to any to access extended properties
-  const [view, setView] = useState<View>(Views.DAY);
+  const currentUser = user as any;
+  const [view, setView] = useState<View>(Views.WEEK);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterMode, setFilterMode] = useState<"my" | "all">("my");
+  //const [isCalendarLoaded, setIsCalendarLoaded] = useState(false);
 
   const isOwner = user?.role === "owner";
 
@@ -64,25 +69,21 @@ export default function AgendaPage() {
           barber_id ( id, profile_id ( full_name ) )
         `);
 
-      // If not owner or filtering by "my", filter by barber_id
       if (!isOwner || filterMode === "my") {
-        // We need to find the barber record for this user first
         const { data: barberData } = await supabase
             .from("barbers")
             .select("id")
-            .eq("profile_id", currentUser.profile_id) // Assuming user.id maps to profile_id or we have profile_id in user object
+            .eq("profile_id", currentUser.profile_id)
             .single();
             
         if (barberData) {
              query = query.eq("barber_id", barberData.id);
         } else if (!isOwner) {
-            // If user is not owner and not a barber (shouldn't happen on this page), show nothing
              setEvents([]);
              setLoading(false);
              return;
         }
       } else {
-        // If owner and "all", filter by barbershop_id
         if (currentUser.barbershop_id) {
             query = query.eq("barbershop_id", currentUser.barbershop_id);
         }
@@ -116,7 +117,12 @@ export default function AgendaPage() {
 
   useEffect(() => {
     fetchAppointments();
-  }, [user, filterMode, view, date]); // Re-fetch when filter changes
+  }, [user, filterMode, view, date]);
+
+  // Melhorar performance do calendário em mobile
+  /*useEffect(() => {
+    setIsCalendarLoaded(true);
+  }, []);*/
 
   const handleNavigate = (newDate: Date) => {
     setDate(newDate);
@@ -126,130 +132,221 @@ export default function AgendaPage() {
     setView(newView);
   };
 
+  const getDateDisplayText = () => {
+    //const today = new Date();
+    if (isToday(date)) return "Hoje";
+    if (isTomorrow(date)) return "Amanhã";
+    
+    if (view === Views.DAY) {
+      return format(date, "EEE, d 'de' MMM", { locale: ptBR });
+    } else if (view === Views.WEEK) {
+      const start = startOfWeek(date, { locale: ptBR });
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      return `${format(start, "d MMM", { locale: ptBR })} - ${format(end, "d MMM", { locale: ptBR })}`;
+    } else {
+      return format(date, "MMM yyyy", { locale: ptBR });
+    }
+  };
+
+  const getEventCountText = () => {
+    const todayEvents = events.filter(event => 
+      isToday(event.start)
+    ).length;
+    
+    return `${events.length} agendamento${events.length !== 1 ? 's' : ''} • ${todayEvents} hoje`;
+  };
+
+  // Navigation handlers para touch
+  const navigatePrevious = () => {
+    const newDate = new Date(date);
+    if (view === Views.DAY) newDate.setDate(date.getDate() - 1);
+    if (view === Views.WEEK) newDate.setDate(date.getDate() - 7);
+    if (view === Views.MONTH) newDate.setMonth(date.getMonth() - 1);
+    setDate(newDate);
+  };
+
+  const navigateNext = () => {
+    const newDate = new Date(date);
+    if (view === Views.DAY) newDate.setDate(date.getDate() + 1);
+    if (view === Views.WEEK) newDate.setDate(date.getDate() + 7);
+    if (view === Views.MONTH) newDate.setMonth(date.getMonth() + 1);
+    setDate(newDate);
+  };
+
+  const eventStyleGetter = (event: CalendarEvent) => {
+    const isCompleted = event.resource?.status === 'completed';
+    const isCancelled = event.resource?.status === 'cancelled';
+    
+    let style = {
+      borderLeft: '4px solid',
+      fontSize: '0.75rem',
+      borderRadius: '4px',
+      opacity: 0.9,
+      color: '',
+      backgroundColor: '',
+      borderColor: ''
+    };
+
+    if (isCancelled) {
+      style.backgroundColor = 'hsl(var(--muted))';
+      style.color = 'hsl(var(--muted-foreground))';
+      style.borderColor = 'hsl(var(--muted-foreground))';
+    } else if (isCompleted) {
+      style.backgroundColor = 'hsl(var(--primary) / 0.15)';
+      style.color = 'hsl(var(--primary))';
+      style.borderColor = 'hsl(var(--primary))';
+    } else {
+      style.backgroundColor = 'hsl(var(--primary))';
+      style.color = 'hsl(var(--primary-foreground))';
+      style.borderColor = 'hsl(var(--primary-foreground))';
+    }
+
+    return {
+      style
+    };
+  };
+
   return (
-    <div className="container mx-auto p-4 pb-24 space-y-6 h-[calc(100vh-80px)] flex flex-col">
-      <Card className="flex-1 flex flex-col shadow-md border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
-          <div>
-            <CardTitle className="text-2xl font-bold flex items-center gap-2">
-              <CalendarIcon className="w-6 h-6 text-primary" />
-              Agenda
-            </CardTitle>
-            <p className="text-muted-foreground text-sm">
-              Gerencie seus agendamentos
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {isOwner && (
-              <Select
-                value={filterMode}
-                onValueChange={(v: "my" | "all") => setFilterMode(v)}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Filtrar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="my">Meus Agendamentos</SelectItem>
-                  <SelectItem value="all">Toda a Barbearia</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-            
-            <div className="flex items-center bg-muted rounded-md p-1">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8"
-                    onClick={() => {
-                        const newDate = new Date(date);
-                        if (view === Views.DAY) newDate.setDate(date.getDate() - 1);
-                        if (view === Views.WEEK) newDate.setDate(date.getDate() - 7);
-                        if (view === Views.MONTH) newDate.setMonth(date.getMonth() - 1);
-                        setDate(newDate);
-                    }}
-                >
-                    <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="px-3 text-sm font-medium min-w-[100px] text-center">
-                    {format(date, view === Views.DAY ? "dd 'de' MMMM" : "MMMM yyyy", { locale: ptBR })}
-                </span>
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8"
-                    onClick={() => {
-                        const newDate = new Date(date);
-                        if (view === Views.DAY) newDate.setDate(date.getDate() + 1);
-                        if (view === Views.WEEK) newDate.setDate(date.getDate() + 7);
-                        if (view === Views.MONTH) newDate.setMonth(date.getMonth() + 1);
-                        setDate(newDate);
-                    }}
-                >
-                    <ChevronRight className="h-4 w-4" />
-                </Button>
+    <div className="flex flex-col h-[calc(100dvh-80px)] bg-background">
+      {/* Sticky Header Section */}
+      <div className="flex-none bg-background/95 backdrop-blur-sm z-10 border-b">
+        <div className="container mx-auto px-4 py-3 space-y-3">
+          
+          {/* Top Row: Title & Actions */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
+                <CalendarIcon className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold leading-tight">Agenda</h1>
+                <p className="text-xs text-muted-foreground font-medium">
+                  {getEventCountText()}
+                </p>
+              </div>
             </div>
-
-            <Select
-                value={view}
-                onValueChange={(v) => setView(v as View)}
-            >
-                <SelectTrigger className="w-[100px]">
+            
+            <div className="flex items-center gap-2">
+               <Button 
+                onClick={() => setDate(new Date())}
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs font-medium"
+              >
+                Hoje
+              </Button>
+              {isOwner && (
+                 <Select
+                  value={filterMode}
+                  onValueChange={(v: "my" | "all") => setFilterMode(v)}
+                >
+                  <SelectTrigger className="h-8 w-[130px] text-xs">
                     <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value={Views.DAY}>Dia</SelectItem>
-                    <SelectItem value={Views.WEEK}>Semana</SelectItem>
-                    <SelectItem value={Views.MONTH}>Mês</SelectItem>
-                </SelectContent>
-            </Select>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="my">Meus</SelectItem>
+                    <SelectItem value="all">Todos</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="flex-1 p-0 sm:p-4">
-            {loading ? (
-                <div className="h-full flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div>
-            ) : (
-                <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: "100%", minHeight: "500px" }}
-                    view={view}
-                    date={date}
-                    onNavigate={handleNavigate}
-                    onView={handleViewChange}
-                    culture="pt-BR"
-                    messages={{
-                        next: "Próximo",
-                        previous: "Anterior",
-                        today: "Hoje",
-                        month: "Mês",
-                        week: "Semana",
-                        day: "Dia",
-                        agenda: "Agenda",
-                        date: "Data",
-                        time: "Hora",
-                        event: "Evento",
-                        noEventsInRange: "Não há agendamentos neste período.",
-                    }}
-                    eventPropGetter={(event) => {
-                        const isCompleted = event.resource?.status === 'completed';
-                        return {
-                            className: `text-xs rounded-md border-l-4 ${isCompleted ? 'bg-green-100 border-green-500 text-green-700' : 'bg-primary/10 border-primary text-primary-foreground'}`,
-                            style: {
-                                backgroundColor: isCompleted ? '#dcfce7' : 'var(--primary)',
-                                color: isCompleted ? '#166534' : 'var(--primary-foreground)',
-                                borderColor: isCompleted ? '#22c55e' : 'var(--primary)',
-                            }
-                        }
-                    }}
-                />
-            )}
-        </CardContent>
-      </Card>
+
+          {/* Controls Row */}
+          <div className="flex items-center justify-between gap-2 bg-muted/30 p-1 rounded-lg">
+             <div className="flex items-center">
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigatePrevious}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-semibold min-w-[100px] text-center px-2 truncate">
+                  {getDateDisplayText()}
+                </span>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigateNext}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+             </div>
+
+             <div className="flex bg-background rounded-md shadow-sm border p-0.5">
+                {[Views.DAY, Views.WEEK, Views.MONTH].map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setView(v)}
+                    className={`
+                      px-3 py-1 text-xs font-medium rounded-sm transition-all
+                      ${view === v 
+                        ? 'bg-primary text-primary-foreground shadow-sm' 
+                        : 'text-muted-foreground hover:bg-muted'
+                      }
+                    `}
+                  >
+                    {v === Views.DAY ? 'Dia' : v === Views.WEEK ? 'Sem' : 'Mês'}
+                  </button>
+                ))}
+             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Calendar Area */}
+      <div className="flex-1 overflow-hidden relative">
+        {loading ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 z-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground mt-2">Carregando...</p>
+          </div>
+        ) : (
+           <Calendar
+              localizer={localizer}
+              events={events}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: '100%' }}
+              view={view}
+              date={date}
+              onNavigate={handleNavigate}
+              onView={handleViewChange}
+              culture="pt-BR"
+              messages={{
+                next: "Próximo",
+                previous: "Anterior",
+                today: "Hoje",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia",
+                agenda: "Agenda",
+                date: "Data",
+                time: "Hora",
+                event: "Evento",
+                noEventsInRange: "Sem agendamentos",
+              }}
+              eventPropGetter={eventStyleGetter}
+              dayPropGetter={(date) => {
+                if (isToday(date)) return { className: 'bg-primary/5' };
+                return {};
+              }}
+              step={30}
+              timeslots={2}
+              selectable={false}
+              popup
+              components={{
+                toolbar: () => null, // Hide default toolbar as we have a custom one
+                week: {
+                  header: ({ date }) => (
+                    <div className="py-2 text-center">
+                      <div className="text-[10px] uppercase text-muted-foreground font-bold">
+                        {format(date, 'EEE', { locale: ptBR })}
+                      </div>
+                      <div className={`text-sm font-bold mt-0.5 ${isToday(date) ? 'text-primary' : ''}`}>
+                        {format(date, 'd')}
+                      </div>
+                    </div>
+                  )
+                }
+              }}
+            />
+        )}
+      </div>
     </div>
   );
 }
