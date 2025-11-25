@@ -14,6 +14,7 @@ import AppointmentHistoric from "./pages/client/historic";
 import ClientHomePage from "./pages/client/home";
 import MakeAppointment from "./pages/client/make-appointment";
 import UserBarberCode from "./pages/client/user-barber-code";
+import LandingPage from "./pages/landing/landing-page";
 import Login from "./pages/login";
 import SettingsPage from "./pages/owner/configurations";
 import OwnerDashboard from "./pages/owner/dashboard";
@@ -156,7 +157,7 @@ export default function App() {
           }
           />
           </Route>
-        <Route path="/" element={<UserBarberCode />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
