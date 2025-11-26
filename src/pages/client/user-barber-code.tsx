@@ -4,16 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useBarberShop } from "@/context/barber-shop-provider";
 import { supabase } from "@/lib/supabase-client";
-import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
-import { QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
 import "../../barber-code.css";
 
 export default function UserBarberCode() {
   const [barberCode, setBarberCode] = useState("");
-  const [isScanning, setIsScanning] = useState(false);
-  const [qrResult, setQrResult] = useState<string | null>(null);
+  //const [isScanning, setIsScanning] = useState(false);
+  //const [qrResult, setQrResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigate();
 
@@ -26,7 +24,7 @@ export default function UserBarberCode() {
   const { setShop } = clientAppointment;
 
   const handleSubmit = async () => {
-    const code = qrResult || barberCode;
+    const code = barberCode//qrResult || barberCode;
     if (!code) {
       alert("Por favor, insira ou escaneie o código da barbearia.");
       return;
@@ -94,7 +92,7 @@ export default function UserBarberCode() {
               — OU —
             </p>
 
-            {!isScanning ? (
+            {/*!isScanning ? (
               <Button
                 variant="outline"
                 onClick={() => setIsScanning(true)}
@@ -129,7 +127,7 @@ export default function UserBarberCode() {
               <div className="text-sm text-emerald-400 font-medium text-center">
                 Código escaneado: {qrResult}
               </div>
-            )}
+            )*/}
           </div>
 
           <Button
