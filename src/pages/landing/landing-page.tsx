@@ -1,3 +1,4 @@
+import { AppShowcase } from "./components/app-show-case";
 import { Audience } from "./components/audience";
 import { Demo } from "./components/demo";
 import { Features } from "./components/features";
@@ -16,6 +17,7 @@ export default function LandingPage() {
       <Testimonials />
       <Demo />
       <Audience />
+      <AppShowcase />
       <Pricing />
       <Footer />
     </div>
