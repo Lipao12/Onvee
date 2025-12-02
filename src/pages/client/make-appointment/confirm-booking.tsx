@@ -71,8 +71,7 @@ export default function ConfirmBooking({
 
       {!user ? (
         <div className="space-y-4">
-
-            <PhoneLogin onLoginSuccess={onNext} />
+          <PhoneLogin onLoginSuccess={onNext} />
         </div>
       ) : (
         <div className="flex justify-center">

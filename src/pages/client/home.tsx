@@ -18,7 +18,7 @@ export default function ClientHomePage() {
   const clientAppointment = useBarberShop();
   if (!clientAppointment) {
     throw new Error(
-      "MakeAppointment must be used within a ClientAppointmentProvider"
+      "MakeAppointment must be used within a ClientAppointmentProvider",
     );
   }
   const { shop, barbershop_config } = clientAppointment;
@@ -44,9 +44,7 @@ export default function ClientHomePage() {
       </div>
 
       <div className="mt-6 text-center">
-        <h1 className="text-2xl font-bold  md:text-3xl">
-          {shop?.name}
-        </h1>
+        <h1 className="text-2xl font-bold  md:text-3xl">{shop?.name}</h1>
 
         <div className="mt-2 flex items-center justify-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
@@ -63,7 +61,7 @@ export default function ClientHomePage() {
               barbershop_config.instagram_user
                 ? "https://instagram.com/" + barbershop_config.instagram_user
                 : "https://instagram.com",
-              "_blank"
+              "_blank",
             )
           }
         >

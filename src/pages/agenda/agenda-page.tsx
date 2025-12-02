@@ -8,16 +8,28 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
-import { format, getDay, isToday, isTomorrow, parse, startOfWeek } from "date-fns";
+import {
+  format,
+  getDay,
+  isToday,
+  isTomorrow,
+  parse,
+  startOfWeek,
+} from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Calendar, dateFnsLocalizer, type View, Views } from "react-big-calendar";
+import {
+  Calendar,
+  dateFnsLocalizer,
+  type View,
+  Views,
+} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { toast } from "sonner";
 
@@ -58,9 +70,7 @@ export default function AgendaPage() {
 
     setLoading(true);
     try {
-      let query = supabase
-        .from("appointments")
-        .select(`
+      let query = supabase.from("appointments").select(`
           id,
           start_time,
           end_time,
@@ -71,21 +81,21 @@ export default function AgendaPage() {
 
       if (!isOwner || filterMode === "my") {
         const { data: barberData } = await supabase
-            .from("barbers")
-            .select("id")
-            .eq("profile_id", currentUser.profile_id)
-            .single();
-            
+          .from("barbers")
+          .select("id")
+          .eq("profile_id", currentUser.profile_id)
+          .single();
+
         if (barberData) {
-             query = query.eq("barber_id", barberData.id);
+          query = query.eq("barber_id", barberData.id);
         } else if (!isOwner) {
-             setEvents([]);
-             setLoading(false);
-             return;
+          setEvents([]);
+          setLoading(false);
+          return;
         }
       } else {
         if (currentUser.barbershop_id) {
-            query = query.eq("barbershop_id", currentUser.barbershop_id);
+          query = query.eq("barbershop_id", currentUser.barbershop_id);
         }
       }
 
@@ -96,10 +106,13 @@ export default function AgendaPage() {
       const formattedEvents: CalendarEvent[] = (data || []).map((appt: any) => {
         const serviceName = appt.service_id?.name || "Serviço";
         const barberName = appt.barber_id?.profile_id?.full_name || "Barbeiro";
-        
+
         return {
           id: appt.id,
-          title: isOwner && filterMode === 'all' ? `${serviceName} - ${barberName}` : serviceName,
+          title:
+            isOwner && filterMode === "all"
+              ? `${serviceName} - ${barberName}`
+              : serviceName,
           start: new Date(appt.start_time),
           end: new Date(appt.end_time),
           resource: appt,
@@ -136,7 +149,7 @@ export default function AgendaPage() {
     //const today = new Date();
     if (isToday(date)) return "Hoje";
     if (isTomorrow(date)) return "Amanhã";
-    
+
     if (view === Views.DAY) {
       return format(date, "EEE, d 'de' MMM", { locale: ptBR });
     } else if (view === Views.WEEK) {
@@ -150,11 +163,9 @@ export default function AgendaPage() {
   };
 
   const getEventCountText = () => {
-    const todayEvents = events.filter(event => 
-      isToday(event.start)
-    ).length;
-    
-    return `${events.length} agendamento${events.length !== 1 ? 's' : ''} • ${todayEvents} hoje`;
+    const todayEvents = events.filter((event) => isToday(event.start)).length;
+
+    return `${events.length} agendamento${events.length !== 1 ? "s" : ""} • ${todayEvents} hoje`;
   };
 
   // Navigation handlers para touch
@@ -175,35 +186,35 @@ export default function AgendaPage() {
   };
 
   const eventStyleGetter = (event: CalendarEvent) => {
-    const isCompleted = event.resource?.status === 'completed';
-    const isCancelled = event.resource?.status === 'cancelled';
-    
+    const isCompleted = event.resource?.status === "completed";
+    const isCancelled = event.resource?.status === "cancelled";
+
     let style = {
-      borderLeft: '4px solid',
-      fontSize: '0.75rem',
-      borderRadius: '4px',
+      borderLeft: "4px solid",
+      fontSize: "0.75rem",
+      borderRadius: "4px",
       opacity: 0.9,
-      color: '',
-      backgroundColor: '',
-      borderColor: ''
+      color: "",
+      backgroundColor: "",
+      borderColor: "",
     };
 
     if (isCancelled) {
-      style.backgroundColor = 'hsl(var(--muted))';
-      style.color = 'hsl(var(--muted-foreground))';
-      style.borderColor = 'hsl(var(--muted-foreground))';
+      style.backgroundColor = "hsl(var(--muted))";
+      style.color = "hsl(var(--muted-foreground))";
+      style.borderColor = "hsl(var(--muted-foreground))";
     } else if (isCompleted) {
-      style.backgroundColor = 'hsl(var(--primary) / 0.15)';
-      style.color = 'hsl(var(--primary))';
-      style.borderColor = 'hsl(var(--primary))';
+      style.backgroundColor = "hsl(var(--primary) / 0.15)";
+      style.color = "hsl(var(--primary))";
+      style.borderColor = "hsl(var(--primary))";
     } else {
-      style.backgroundColor = 'hsl(var(--primary))';
-      style.color = 'hsl(var(--primary-foreground))';
-      style.borderColor = 'hsl(var(--primary-foreground))';
+      style.backgroundColor = "hsl(var(--primary))";
+      style.color = "hsl(var(--primary-foreground))";
+      style.borderColor = "hsl(var(--primary-foreground))";
     }
 
     return {
-      style
+      style,
     };
   };
 
@@ -212,7 +223,6 @@ export default function AgendaPage() {
       {/* Sticky Header Section */}
       <div className="flex-none bg-background/95 backdrop-blur-sm z-10 border-b">
         <div className="container mx-auto px-4 py-3 space-y-3">
-          
           {/* Top Row: Title & Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -226,9 +236,9 @@ export default function AgendaPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
-               <Button 
+              <Button
                 onClick={() => setDate(new Date())}
                 variant="outline"
                 size="sm"
@@ -237,7 +247,7 @@ export default function AgendaPage() {
                 Hoje
               </Button>
               {isOwner && (
-                 <Select
+                <Select
                   value={filterMode}
                   onValueChange={(v: "my" | "all") => setFilterMode(v)}
                 >
@@ -255,35 +265,46 @@ export default function AgendaPage() {
 
           {/* Controls Row */}
           <div className="flex items-center justify-between gap-2 bg-muted/30 p-1 rounded-lg">
-             <div className="flex items-center">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigatePrevious}>
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm font-semibold min-w-[100px] text-center px-2 truncate">
-                  {getDateDisplayText()}
-                </span>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigateNext}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-             </div>
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={navigatePrevious}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm font-semibold min-w-[100px] text-center px-2 truncate">
+                {getDateDisplayText()}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={navigateNext}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
 
-             <div className="flex bg-background rounded-md shadow-sm border p-0.5">
-                {[Views.DAY, Views.WEEK, Views.MONTH].map((v) => (
-                  <button
-                    key={v}
-                    onClick={() => setView(v)}
-                    className={`
+            <div className="flex bg-background rounded-md shadow-sm border p-0.5">
+              {[Views.DAY, Views.WEEK, Views.MONTH].map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`
                       px-3 py-1 text-xs font-medium rounded-sm transition-all
-                      ${view === v 
-                        ? 'bg-primary text-primary-foreground shadow-sm' 
-                        : 'text-muted-foreground hover:bg-muted'
+                      ${
+                        view === v
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted"
                       }
                     `}
-                  >
-                    {v === Views.DAY ? 'Dia' : v === Views.WEEK ? 'Sem' : 'Mês'}
-                  </button>
-                ))}
-             </div>
+                >
+                  {v === Views.DAY ? "Dia" : v === Views.WEEK ? "Sem" : "Mês"}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -296,55 +317,57 @@ export default function AgendaPage() {
             <p className="text-sm text-muted-foreground mt-2">Carregando...</p>
           </div>
         ) : (
-           <Calendar
-              localizer={localizer}
-              events={events}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: '100%' }}
-              view={view}
-              date={date}
-              onNavigate={handleNavigate}
-              onView={handleViewChange}
-              culture="pt-BR"
-              messages={{
-                next: "Próximo",
-                previous: "Anterior",
-                today: "Hoje",
-                month: "Mês",
-                week: "Semana",
-                day: "Dia",
-                agenda: "Agenda",
-                date: "Data",
-                time: "Hora",
-                event: "Evento",
-                noEventsInRange: "Sem agendamentos",
-              }}
-              eventPropGetter={eventStyleGetter}
-              dayPropGetter={(date) => {
-                if (isToday(date)) return { className: 'bg-primary/5' };
-                return {};
-              }}
-              step={30}
-              timeslots={2}
-              selectable={false}
-              popup
-              components={{
-                toolbar: () => null, // Hide default toolbar as we have a custom one
-                week: {
-                  header: ({ date }) => (
-                    <div className="py-2 text-center">
-                      <div className="text-[10px] uppercase text-muted-foreground font-bold">
-                        {format(date, 'EEE', { locale: ptBR })}
-                      </div>
-                      <div className={`text-sm font-bold mt-0.5 ${isToday(date) ? 'text-primary' : ''}`}>
-                        {format(date, 'd')}
-                      </div>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: "100%" }}
+            view={view}
+            date={date}
+            onNavigate={handleNavigate}
+            onView={handleViewChange}
+            culture="pt-BR"
+            messages={{
+              next: "Próximo",
+              previous: "Anterior",
+              today: "Hoje",
+              month: "Mês",
+              week: "Semana",
+              day: "Dia",
+              agenda: "Agenda",
+              date: "Data",
+              time: "Hora",
+              event: "Evento",
+              noEventsInRange: "Sem agendamentos",
+            }}
+            eventPropGetter={eventStyleGetter}
+            dayPropGetter={(date) => {
+              if (isToday(date)) return { className: "bg-primary/5" };
+              return {};
+            }}
+            step={30}
+            timeslots={2}
+            selectable={false}
+            popup
+            components={{
+              toolbar: () => null, // Hide default toolbar as we have a custom one
+              week: {
+                header: ({ date }) => (
+                  <div className="py-2 text-center">
+                    <div className="text-[10px] uppercase text-muted-foreground font-bold">
+                      {format(date, "EEE", { locale: ptBR })}
                     </div>
-                  )
-                }
-              }}
-            />
+                    <div
+                      className={`text-sm font-bold mt-0.5 ${isToday(date) ? "text-primary" : ""}`}
+                    >
+                      {format(date, "d")}
+                    </div>
+                  </div>
+                ),
+              },
+            }}
+          />
         )}
       </div>
     </div>

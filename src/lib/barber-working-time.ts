@@ -4,7 +4,7 @@ export interface WorkingHour {
   id?: string;
   day_of_week: number; // 0 = domingo, 6 = sábado
   start_time: string; // formato "HH:mm"
-  end_time: string;   // formato "HH:mm"
+  end_time: string; // formato "HH:mm"
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;
@@ -13,14 +13,16 @@ export interface WorkingHour {
 export interface BreakTime {
   id?: string;
   start_time: string; // ISO string (timestamptz)
-  end_time: string;   // ISO string
+  end_time: string; // ISO string
   reason?: string;
   created_at?: string;
   updated_at?: string;
 }
 
 // 🔹 Buscar horários de trabalho
-export async function fetchWorkingHours(barber_id: string): Promise<WorkingHour[]> {
+export async function fetchWorkingHours(
+  barber_id: string,
+): Promise<WorkingHour[]> {
   const { data, error } = await supabase
     .from("working_hours")
     .select("*")
@@ -36,7 +38,10 @@ export async function fetchWorkingHours(barber_id: string): Promise<WorkingHour[
 }
 
 // 🔹 Criar ou atualizar horários de trabalho (com tratamento de dias ativos/inativos)
-export async function upsertWorkingHours(barber_id: string, workTimes: WorkingHour[]): Promise<void> {
+export async function upsertWorkingHours(
+  barber_id: string,
+  workTimes: WorkingHour[],
+): Promise<void> {
   if (workTimes.length === 0) return;
 
   try {
@@ -50,8 +55,8 @@ export async function upsertWorkingHours(barber_id: string, workTimes: WorkingHo
     if (deleteError) throw deleteError;
 
     // Filtra apenas os dias ativos e prepara o payload
-    const activeWorkTimes = workTimes.filter(wh => wh.is_active);
-    
+    const activeWorkTimes = workTimes.filter((wh) => wh.is_active);
+
     if (activeWorkTimes.length === 0) return;
 
     const payload = activeWorkTimes.map((w) => ({
@@ -111,7 +116,10 @@ export async function fetchBreaks(barber_id: string): Promise<BreakTime[]> {
 }
 
 // 🔹 Criar múltiplos intervalos
-export async function createBreak(barber_id: string, breaksData: BreakTime[]): Promise<void> {
+export async function createBreak(
+  barber_id: string,
+  breaksData: BreakTime[],
+): Promise<void> {
   if (breaksData.length === 0) return;
 
   try {
@@ -128,7 +136,7 @@ export async function createBreak(barber_id: string, breaksData: BreakTime[]): P
       barber_id,
       start_time: convertToISOTimestamp(breakItem.start_time),
       end_time: convertToISOTimestamp(breakItem.end_time),
-      reason: breakItem.reason || '',
+      reason: breakItem.reason || "",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }));
@@ -149,10 +157,7 @@ export async function createBreak(barber_id: string, breaksData: BreakTime[]): P
 
 // 🔹 Deletar um intervalo
 export async function deleteBreak(breakId: string): Promise<void> {
-  const { error } = await supabase
-    .from("breaks")
-    .delete()
-    .eq("id", breakId);
+  const { error } = await supabase.from("breaks").delete().eq("id", breakId);
 
   if (error) {
     console.error("Erro ao deletar break:", error.message);
@@ -163,26 +168,29 @@ export async function deleteBreak(breakId: string): Promise<void> {
 // 🔹 Função auxiliar para converter datetime-local para ISO timestamp
 function convertToISOTimestamp(datetimeString: string): string {
   // Se já estiver em formato ISO, retorna como está
-  if (datetimeString.includes('T') && datetimeString.includes(':')) {
+  if (datetimeString.includes("T") && datetimeString.includes(":")) {
     return datetimeString;
   }
-  
+
   // Se for apenas time (HH:mm), adiciona uma data padrão
-  if (datetimeString.length === 5 && datetimeString.includes(':')) {
-    const today = new Date().toISOString().split('T')[0];
+  if (datetimeString.length === 5 && datetimeString.includes(":")) {
+    const today = new Date().toISOString().split("T")[0];
     return `${today}T${datetimeString}:00`;
   }
-  
+
   // Para strings do datetime-local (YYYY-MM-DDTHH:mm)
   if (datetimeString.length === 16) {
     return `${datetimeString}:00`;
   }
-  
+
   return datetimeString;
 }
 
 // 🔹 Atualizar um intervalo existente
-export async function updateBreak(breakId: string, updates: Partial<BreakTime>): Promise<void> {
+export async function updateBreak(
+  breakId: string,
+  updates: Partial<BreakTime>,
+): Promise<void> {
   const payload = {
     ...updates,
     updated_at: new Date().toISOString(),

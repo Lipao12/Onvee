@@ -18,13 +18,13 @@ export default function UserBarberCode() {
   const clientAppointment = useBarberShop();
   if (!clientAppointment) {
     throw new Error(
-      "MakeAppointment must be used within a ClientAppointmentProvider"
+      "MakeAppointment must be used within a ClientAppointmentProvider",
     );
   }
   const { setShop } = clientAppointment;
 
   const handleSubmit = async () => {
-    const code = barberCode//qrResult || barberCode;
+    const code = barberCode; //qrResult || barberCode;
     if (!code) {
       alert("Por favor, insira ou escaneie o código da barbearia.");
       return;

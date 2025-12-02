@@ -41,7 +41,7 @@ export default function App() {
   const clientAppointment = useBarberShop();
   if (!clientAppointment) {
     throw new Error(
-      "MakeAppointment must be used within a ClientAppointmentProvider"
+      "MakeAppointment must be used within a ClientAppointmentProvider",
     );
   }
   const { shop } = clientAppointment;
@@ -128,19 +128,19 @@ export default function App() {
             }
           />
         </Route>
-                  <Route
-            path="/barber/onboarding"
-            element={
-              <ProtectedRoute>
-                <OnboardingWizard />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/barber/onboarding"
+          element={
+            <ProtectedRoute>
+              <OnboardingWizard />
+            </ProtectedRoute>
+          }
+        />
         <Route element={<AppLayout />}>
           <Route path="/barber/dashboard" element={<Dashboard />} />
           <Route path="/barber/schedule" element={<Dashboard />} />
           <Route path="/barber/working-hours" element={<WorkingHoursPage />} />
-          
+
           {/* Owner Routes */}
           <Route path="/owner/dashboard" element={<OwnerDashboard />} />
           <Route path="/owner/manage-barbers" element={<ManageBarbersPage />} />
@@ -148,15 +148,15 @@ export default function App() {
           <Route path="/services" element={<MakeAppointment />} />
           <Route path="/newappointment" element={<MakeAppointment />} />
           <Route path="/appointments" element={<AppointmentHistoric />} />
-        <Route
-          path="/agenda"
-          element={
-            <ProtectedRoute allowedRoles={["barber", "owner"]}>
-              <AgendaPage />
-            </ProtectedRoute>
-          }
+          <Route
+            path="/agenda"
+            element={
+              <ProtectedRoute allowedRoles={["barber", "owner"]}>
+                <AgendaPage />
+              </ProtectedRoute>
+            }
           />
-          </Route>
+        </Route>
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

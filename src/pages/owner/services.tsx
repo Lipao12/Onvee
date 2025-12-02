@@ -300,7 +300,7 @@ export default function ManageServicesPage() {
                     <Scissors className="w-10 h-10 text-white/50" />
                   </div>
                 )}
-                
+
                 {/* Gradiente Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-90" />
 
@@ -514,8 +514,8 @@ export default function ManageServicesPage() {
               {uploading
                 ? "Salvando..."
                 : editingService
-                ? "Atualizar Serviço"
-                : "Criar Serviço"}
+                  ? "Atualizar Serviço"
+                  : "Criar Serviço"}
             </Button>
           </div>
         </DialogContent>

@@ -43,26 +43,26 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@theme{
-   /* Paleta Vintage */
-  --color-vintage-50:  #F5E6D3;
-  --color-vintage-100: #EDE0C8;
-  --color-vintage-200: #D4A574;
-  --color-vintage-300: #C49E68;
-  --color-vintage-400: #7B3F00;
-  --color-vintage-500: #5B4636;
-  --color-vintage-600: #2F2F2F;
-  --color-vintage-700: #2A2A2A;
-  --color-vintage-800: #1F1F1F;
+@theme {
+  /* Paleta Vintage */
+  --color-vintage-50: #f5e6d3;
+  --color-vintage-100: #ede0c8;
+  --color-vintage-200: #d4a574;
+  --color-vintage-300: #c49e68;
+  --color-vintage-400: #7b3f00;
+  --color-vintage-500: #5b4636;
+  --color-vintage-600: #2f2f2f;
+  --color-vintage-700: #2a2a2a;
+  --color-vintage-800: #1f1f1f;
   --color-vintage-900: #141414;
   /* Tokens nomeados */
-  --color-vintage-primary:   #7B3F00;
-  --color-vintage-secondary: #C49E68;
-  --color-vintage-accent:    #D4A574;
-  --color-vintage-background:#F5E6D3;
-  --color-vintage-surface:   #EDE0C8;
-  --color-vintage-text:      #2F2F2F;
-  --color-vintage-muted:     #5B4636;
+  --color-vintage-primary: #7b3f00;
+  --color-vintage-secondary: #c49e68;
+  --color-vintage-accent: #d4a574;
+  --color-vintage-background: #f5e6d3;
+  --color-vintage-surface: #ede0c8;
+  --color-vintage-text: #2f2f2f;
+  --color-vintage-muted: #5b4636;
 }
 
 :root {
@@ -98,8 +98,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --step-current: oklch(0.78 0.18 240); 
-  --step-active: oklch(0.64 0.18 240); 
+  --step-current: oklch(0.78 0.18 240);
+  --step-active: oklch(0.64 0.18 240);
   --step-inactive: oklch(0.45 0 0);
 }
 
@@ -138,40 +138,40 @@
 }
 
 .theme-vintage {
-  --background: #F5E6D3;
-  --foreground: #2F2F2F;
+  --background: #f5e6d3;
+  --foreground: #2f2f2f;
   --card: #e0d5c1;
   --card-foreground: #302e2e;
-  --popover: #F5E6D3;
-  --popover-foreground: #2F2F2F;
+  --popover: #f5e6d3;
+  --popover-foreground: #2f2f2f;
   --primary: #b98145;
-  --primary-foreground: #F5E6D3;
-  --secondary: #C49E68;
-  --secondary-foreground: #2F2F2F;
-  --muted:  #5B4636;/*#f5f5f5;*/
-  --muted-foreground: #2F2F2F;/*#737373;*/
-  --accent: #D4A574;
-  --accent-foreground: #2F2F2F;
+  --primary-foreground: #f5e6d3;
+  --secondary: #c49e68;
+  --secondary-foreground: #2f2f2f;
+  --muted: #5b4636; /*#f5f5f5;*/
+  --muted-foreground: #2f2f2f; /*#737373;*/
+  --accent: #d4a574;
+  --accent-foreground: #2f2f2f;
   --destructive: #dc2626;
-  --border: #C49E68;
-  --input: #EDE0C8;
-  --ring: #7B3F00;
+  --border: #c49e68;
+  --input: #ede0c8;
+  --ring: #7b3f00;
   --step-current: #d7b48a;
-  --step-active:  #b98145;
-  --step-inactive:#5b4636;
+  --step-active: #b98145;
+  --step-inactive: #5b4636;
 }
 
 .theme-vintage.dark {
   /* Dark mode vintage */
-  --background: #1A120B;
-  --foreground: #F5E6D3;
-  --card: #2F2F2F;
-  --card-foreground: #F5E6D3;
-  --primary: #D4A574;
-  --primary-foreground: #1A120B;
-  --secondary: #5B4636;
-  --secondary-foreground: #F5E6D3;
-  --border: #5B4636;
+  --background: #1a120b;
+  --foreground: #f5e6d3;
+  --card: #2f2f2f;
+  --card-foreground: #f5e6d3;
+  --primary: #d4a574;
+  --primary-foreground: #1a120b;
+  --secondary: #5b4636;
+  --secondary-foreground: #f5e6d3;
+  --border: #5b4636;
   --step-current: #e6c49d;
   --step-active: #d4a574;
   --step-inactive: #5b4636;

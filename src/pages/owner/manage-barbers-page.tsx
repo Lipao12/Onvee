@@ -13,13 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase-client";
-import {
-  Image as ImageIcon,
-  Loader2,
-  Plus,
-  Trash2,
-  User
-} from "lucide-react";
+import { Image as ImageIcon, Loader2, Plus, Trash2, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -223,7 +217,6 @@ export default function ManageBarbersPage() {
     setImagePreview(previewUrl);
   };
 
-
   console.log("Aqui estçao os barbers: ", barbers);
 
   return (
@@ -402,10 +395,7 @@ export default function ManageBarbersPage() {
 
             <Button
               onClick={handleSave}
-              disabled={
-                !formData.name ||
-                uploading
-              }
+              disabled={!formData.name || uploading}
               className="w-full gap-2"
             >
               {uploading ? (
@@ -416,8 +406,8 @@ export default function ManageBarbersPage() {
               {uploading
                 ? "Salvando..."
                 : editingService
-                ? "Atualizar Serviço"
-                : "Criar Serviço"}
+                  ? "Atualizar Serviço"
+                  : "Criar Serviço"}
             </Button>
           </div>
         </DialogContent>

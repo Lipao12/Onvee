@@ -39,7 +39,7 @@ export default function CalendarList({
   const clientAppointment = useContext(ClientAppointmentContext);
   if (!clientAppointment) {
     throw new Error(
-      "MakeAppointment must be used within a ClientAppointmentProvider"
+      "MakeAppointment must be used within a ClientAppointmentProvider",
     );
   }
   const { service, barber } = clientAppointment;
@@ -84,7 +84,7 @@ export default function CalendarList({
         const slots = await fetchBarberAvailability(
           barber?.id,
           selectedDate,
-          serviceDuration
+          serviceDuration,
         );
         setAvailableSlots(slots);
 
@@ -121,7 +121,7 @@ export default function CalendarList({
         })
       );*/
       onNext(
-        selectedSlot
+        selectedSlot,
         /*selectedSlot.start.toLocaleTimeString("pt-BR", {
           hour: "2-digit",
           minute: "2-digit",
@@ -131,11 +131,14 @@ export default function CalendarList({
   };
 
   // Agrupar slots por barbeiro
-  const slotsByBarber = availableSlots.reduce((acc, slot) => {
-    if (!acc[slot.barberName]) acc[slot.barberName] = [];
-    acc[slot.barberName].push(slot);
-    return acc;
-  }, {} as Record<string, AvailableSlot[]>);
+  const slotsByBarber = availableSlots.reduce(
+    (acc, slot) => {
+      if (!acc[slot.barberName]) acc[slot.barberName] = [];
+      acc[slot.barberName].push(slot);
+      return acc;
+    },
+    {} as Record<string, AvailableSlot[]>,
+  );
 
   return (
     <div className="space-y-6 pb-20">
@@ -167,8 +170,8 @@ export default function CalendarList({
                   {isToday(date)
                     ? "Hoje"
                     : isTomorrow(date)
-                    ? "Amanhã"
-                    : format(date, "EEE dd/MM", { locale: ptBR })}
+                      ? "Amanhã"
+                      : format(date, "EEE dd/MM", { locale: ptBR })}
                 </Button>
               ))}
             </div>
@@ -231,18 +234,16 @@ export default function CalendarList({
                   </div>
                 ))}
 
-                 <div className="flex justify-center mt-8">
-              <Button
-                onClick={handleConfirm}
-                className="h-12 px-8 text-base font-medium transition"
-              >
-                Confirmar Horário
-              </Button>
-            </div>
+                <div className="flex justify-center mt-8">
+                  <Button
+                    onClick={handleConfirm}
+                    className="h-12 px-8 text-base font-medium transition"
+                  >
+                    Confirmar Horário
+                  </Button>
+                </div>
               </div>
             )}
-
-           
           </CardContent>
         </Card>
       </div>

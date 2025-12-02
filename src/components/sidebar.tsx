@@ -1,15 +1,15 @@
 import { useAuth, type UserRole } from "@/context/auth-provider";
 import { supabase } from "@/lib/supabase-client";
 import {
-    Calendar,
-    Clock,
-    HomeIcon,
-    LayoutDashboard,
-    LogOut,
-    Plus,
-    Scissors,
-    Settings,
-    Users,
+  Calendar,
+  Clock,
+  HomeIcon,
+  LayoutDashboard,
+  LogOut,
+  Plus,
+  Scissors,
+  Settings,
+  Users,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -38,23 +38,58 @@ export default function Sidebar() {
   const clientTabs: TabConfig[] = [
     { name: "Home", icon: HomeIcon, path: "/home", roles: ["client"] },
     { name: "Agendar", icon: Plus, path: "/newappointment", roles: ["client"] },
-    { name: "Histórico", icon: Calendar, path: "/appointments", roles: ["client"] },
+    {
+      name: "Histórico",
+      icon: Calendar,
+      path: "/appointments",
+      roles: ["client"],
+    },
   ];
 
   // Barber Tabs
   const barberTabs: TabConfig[] = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/barber/dashboard", roles: ["barber"] },
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/barber/dashboard",
+      roles: ["barber"],
+    },
     { name: "Agenda", icon: Calendar, path: "/agenda", roles: ["barber"] },
-    { name: "Horários", icon: Clock, path: "/barber/working-hours", roles: ["barber"] },
+    {
+      name: "Horários",
+      icon: Clock,
+      path: "/barber/working-hours",
+      roles: ["barber"],
+    },
   ];
 
   // Owner Tabs
   const ownerTabs: TabConfig[] = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/owner/dashboard", roles: ["owner"] },
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/owner/dashboard",
+      roles: ["owner"],
+    },
     { name: "Agenda", icon: Calendar, path: "/agenda", roles: ["owner"] },
-    { name: "Barbeiros", icon: Users, path: "/owner/manage-barbers", roles: ["owner"] },
-    { name: "Serviços", icon: Scissors, path: "/owner/manage-services", roles: ["owner"] },
-    { name: "Configurações", icon: Settings, path: "/owner/config-barbershop", roles: ["owner"] },
+    {
+      name: "Barbeiros",
+      icon: Users,
+      path: "/owner/manage-barbers",
+      roles: ["owner"],
+    },
+    {
+      name: "Serviços",
+      icon: Scissors,
+      path: "/owner/manage-services",
+      roles: ["owner"],
+    },
+    {
+      name: "Configurações",
+      icon: Settings,
+      path: "/owner/config-barbershop",
+      roles: ["owner"],
+    },
   ];
 
   const getTabs = () => {

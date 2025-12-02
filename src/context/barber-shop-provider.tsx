@@ -48,12 +48,12 @@ interface BarberShopContextProps {
   fetchShopData: (shopId: ShopId) => void;
   fetchBarberAvailability: any;
   updateBarbershopConfig: (
-    configData: Partial<BarbershopConfig>
+    configData: Partial<BarbershopConfig>,
   ) => Promise<void>;
 }
 
 const BarberShopContext = createContext<BarberShopContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 export function BarberShopProvider({ children }: { children: ReactNode }) {
@@ -68,7 +68,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const cacheRef = useRef<Map<string, { data: any; timestamp: number }>>(
-    new Map()
+    new Map(),
   );
   const CACHE_DURATION = 5 * 60 * 1000;
 
@@ -105,7 +105,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
             .from("barbers")
             .select(
               `id, barbershop_id, profile_id(full_name, image_url, phone)
-              , bio, rating, is_active`
+              , bio, rating, is_active`,
             )
             .eq("barbershop_id", shopId)
             .eq("is_active", true),
@@ -137,12 +137,12 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
           : {}),
       }));
 
-      const shop_normalized  = {
+      const shop_normalized = {
         ...shopRes.data,
         ...barbershopConfigRes.data,
-      }
+      };
 
-      console.log("Normalizado", shop_normalized)
+      console.log("Normalizado", shop_normalized);
 
       const data = {
         shop: shop_normalized,
@@ -177,43 +177,42 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
   };
 
   function darken(hex: string, amount = 0.2) {
-  const num = parseInt(hex.replace("#", ""), 16);
+    const num = parseInt(hex.replace("#", ""), 16);
 
-  let r = (num >> 16) & 255;
-  let g = (num >> 8) & 255;
-  let b = num & 255;
+    let r = (num >> 16) & 255;
+    let g = (num >> 8) & 255;
+    let b = num & 255;
 
-  r = Math.max(0, Math.floor(r * (1 - amount)));
-  g = Math.max(0, Math.floor(g * (1 - amount)));
-  b = Math.max(0, Math.floor(b * (1 - amount)));
+    r = Math.max(0, Math.floor(r * (1 - amount)));
+    g = Math.max(0, Math.floor(g * (1 - amount)));
+    b = Math.max(0, Math.floor(b * (1 - amount)));
 
-  const newHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b)
-    .toString(16)
-    .slice(1);
+    const newHex =
+      "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 
-  return newHex;
-}
+    return newHex;
+  }
 
   const applyThemeColors = (color: string | null) => {
     if (!color) return;
 
     const root = document.documentElement;
     // Assuming color is in hex format, we might need to convert to oklch if we were strictly following the new tailwind 4 theme system
-    // But since we are using inline styles for dynamic overrides, hex works for many things, 
+    // But since we are using inline styles for dynamic overrides, hex works for many things,
     // BUT the current css uses oklch for --primary etc.
     // However, setting the variable on style attribute overrides the class definition.
     // If the user provides a hex color, we can try to use it directly.
     // Note: Tailwind 4 variables like --primary are often used with opacity modifiers (e.g. bg-primary/50)
-    // which requires the variable to be just the color channels if using the old method, 
+    // which requires the variable to be just the color channels if using the old method,
     // or a valid color value if using the new CSS variables.
     // Let's try setting it directly. If it breaks opacity, we might need a hex-to-oklch converter or similar.
     // For now, let's assume simple usage.
-    
+
     root.style.setProperty("--main-color", color);
     root.style.setProperty("--ring", color);
     root.style.setProperty("--step-active", darken(color));
     root.style.setProperty("--step-current", color); // Or a lighter version?
-    
+
     // Also set sidebar primary if needed
     root.style.setProperty("--sidebar-primary", color);
   };
@@ -222,7 +221,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
     async (
       barberId: string,
       date: Date,
-      serviceDuration: number
+      serviceDuration: number,
     ): Promise<AvailableSlot[]> => {
       if (!barberId || serviceDuration <= 0) return [];
 
@@ -269,7 +268,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         const hasConflict = (
           slotStart: Date,
           slotEnd: Date,
-          intervals: Array<{ start_time: string; end_time: string }>
+          intervals: Array<{ start_time: string; end_time: string }>,
         ): boolean => {
           return intervals.some((interval) => {
             const start = new Date(interval.start_time).getTime();
@@ -304,7 +303,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
 
           while (true) {
             const slotEnd = new Date(
-              current.getTime() + serviceDuration * 60000
+              current.getTime() + serviceDuration * 60000,
             );
 
             // Sai se o serviço não cabe mais no horário de trabalho
@@ -315,7 +314,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
             const apptConflict = hasConflict(
               current,
               slotEnd,
-              appointments || []
+              appointments || [],
             );
 
             if (!breakConflict && !apptConflict) {
@@ -343,7 +342,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         return [];
       }
     },
-    [] // Dependências: supabase é estável
+    [], // Dependências: supabase é estável
   );
 
   const updateBarbershopConfig = useCallback(
@@ -368,7 +367,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
                   image_url: configData.image_url,
                 }),
               })
-              .eq("id", shop.id)
+              .eq("id", shop.id),
           );
         }
 
@@ -399,14 +398,14 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
               supabase
                 .from("barbershop_config")
                 .update(configPayload)
-                .eq("id", existingConfig.id)
+                .eq("id", existingConfig.id),
             );
           } else {
             updates.push(
               supabase.from("barbershop_config").insert({
                 barbershop_id: shop.id,
                 ...configPayload,
-              })
+              }),
             );
           }
         }
@@ -454,7 +453,7 @@ export function BarberShopProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     },
-    [shop?.id]
+    [shop?.id],
   );
 
   return (

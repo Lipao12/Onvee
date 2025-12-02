@@ -79,7 +79,7 @@ export default function WorkingHoursPage() {
           .select(
             `
              *
-            `
+            `,
           )
           .eq("profile_id", user.id)
           .single();
@@ -139,8 +139,8 @@ export default function WorkingHoursPage() {
   const toggleDayActive = (index: number) => {
     setWorkingHours((prev) =>
       prev.map((item, i) =>
-        i === index ? { ...item, is_active: !item.is_active } : item
-      )
+        i === index ? { ...item, is_active: !item.is_active } : item,
+      ),
     );
   };
 
@@ -311,8 +311,8 @@ export default function WorkingHoursPage() {
                         prev.map((item, i) =>
                           i === index
                             ? { ...item, start_time: e.target.value }
-                            : item
-                        )
+                            : item,
+                        ),
                       )
                     }
                     disabled={!wh.is_active}
@@ -332,8 +332,8 @@ export default function WorkingHoursPage() {
                         prev.map((item, i) =>
                           i === index
                             ? { ...item, end_time: e.target.value }
-                            : item
-                        )
+                            : item,
+                        ),
                       )
                     }
                     disabled={!wh.is_active}
@@ -406,8 +406,8 @@ export default function WorkingHoursPage() {
                             prev.map((item, i) =>
                               i === index
                                 ? { ...item, start_time: e.target.value }
-                                : item
-                            )
+                                : item,
+                            ),
                           )
                         }
                       />
@@ -425,8 +425,8 @@ export default function WorkingHoursPage() {
                             prev.map((item, i) =>
                               i === index
                                 ? { ...item, end_time: e.target.value }
-                                : item
-                            )
+                                : item,
+                            ),
                           )
                         }
                       />
@@ -448,8 +448,8 @@ export default function WorkingHoursPage() {
                             prev.map((item, i) =>
                               i === index
                                 ? { ...item, reason: e.target.value }
-                                : item
-                            )
+                                : item,
+                            ),
                           )
                         }
                       />

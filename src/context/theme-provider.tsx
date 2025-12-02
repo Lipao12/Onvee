@@ -23,7 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     // Lê o tema salvo
     const storedTheme = localStorage.getItem("theme") as Theme | null;
     const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
 
     const initialTheme = storedTheme || (systemPrefersDark ? "dark" : "light");

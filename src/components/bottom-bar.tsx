@@ -53,20 +53,40 @@ export default function BottomBar() {
   const clientTabs: TabConfig[] = [
     { name: "Home", icon: HomeIcon, path: "/home", roles: ["client"] },
     { name: "Agendar", icon: Plus, path: "/newappointment", roles: ["client"] },
-    { name: "Histórico", icon: Calendar, path: "/appointments", roles: ["client"] },
+    {
+      name: "Histórico",
+      icon: Calendar,
+      path: "/appointments",
+      roles: ["client"],
+    },
   ];
 
   // Barber Tabs
   const barberTabs: TabConfig[] = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/barber/dashboard", roles: ["barber"] },
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/barber/dashboard",
+      roles: ["barber"],
+    },
     { name: "Agenda", icon: Calendar, path: "/agenda", roles: ["barber"] },
-    { name: "Horários", icon: Clock, path: "/barber/working-hours", roles: ["barber"] },
+    {
+      name: "Horários",
+      icon: Clock,
+      path: "/barber/working-hours",
+      roles: ["barber"],
+    },
     { name: "Sair", icon: LogOut, action: handleLogout, roles: ["barber"] },
   ];
 
   // Owner Tabs (Bottom Bar)
   const ownerTabs: TabConfig[] = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/owner/dashboard", roles: ["owner"] },
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/owner/dashboard",
+      roles: ["owner"],
+    },
     { name: "Agenda", icon: Calendar, path: "/agenda", roles: ["owner"] },
     { name: "Menu", icon: Menu, roles: ["owner"] }, // Triggers Sheet
   ];
@@ -111,7 +131,11 @@ export default function BottomBar() {
 
             if (tab.name === "Menu") {
               return (
-                <Sheet key={tab.name} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <Sheet
+                  key={tab.name}
+                  open={isSheetOpen}
+                  onOpenChange={setIsSheetOpen}
+                >
                   <SheetTrigger asChild>
                     <button className="flex flex-col items-center justify-center transition-all duration-200 active:scale-95 opacity-70 hover:opacity-100">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full">

@@ -100,9 +100,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .single();
 
           if (barbershop?.admin_id === session.user.id) {
-             //role = "owner";
-             // Override profile role if owner
-             profile.app_role = "owner";
+            //role = "owner";
+            // Override profile role if owner
+            profile.app_role = "owner";
           }
         }
 
@@ -134,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event) => {
       console.log("Auth event:", event);
-      
+
       if (event === "SIGNED_OUT") {
         localStorage.removeItem("client_session");
         setAuthState({

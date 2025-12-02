@@ -59,7 +59,7 @@ export default function MakeAppointment() {
   const clientAppointment = useContext(ClientAppointmentContext);
   if (!clientAppointment) {
     throw new Error(
-      "MakeAppointment must be used within a ClientAppointmentProvider"
+      "MakeAppointment must be used within a ClientAppointmentProvider",
     );
   }
   const {
@@ -170,8 +170,8 @@ export default function MakeAppointment() {
                     isCurrent
                       ? "text-[var(--step-current)]" //"text-blue-400"
                       : isActive
-                      ? "text-[var(--step-active)]" //"text-blue-700"
-                      : "text-zinc-500"
+                        ? "text-[var(--step-active)]" //"text-blue-700"
+                        : "text-zinc-500"
                   }`}
                   initial={false}
                   animate={{ scale: isCurrent ? 1.1 : 1 }}
@@ -182,8 +182,8 @@ export default function MakeAppointment() {
                       isCurrent
                         ? "bg-[var(--step-current)] shadow-[0_0_6px_rgba(var(--step-current),0.8)]" //0_0_6px_rgba(59,130,246,0.8)"bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]"
                         : isActive
-                        ? "bg-[var(--step-active)]" //"bg-blue-600"
-                        : "dark:bg-zinc-700 bg-zinc-400"
+                          ? "bg-[var(--step-active)]" //"bg-blue-600"
+                          : "dark:bg-zinc-700 bg-zinc-400"
                     }`}
                   />
                   {<step.Icon className="h-4 w-4 mt-1" />}

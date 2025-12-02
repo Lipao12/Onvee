@@ -1,28 +1,28 @@
 [data-theme="vintage"] {
-  --background: #F5E6D3;
-  --foreground: #2F2F2F;
+  --background: #f5e6d3;
+  --foreground: #2f2f2f;
 
-  --card: #EDE0C8;
-  --card-foreground: #2F2F2F;
+  --card: #ede0c8;
+  --card-foreground: #2f2f2f;
 
-  --popover: #EDE0C8;
-  --popover-foreground: #2F2F2F;
+  --popover: #ede0c8;
+  --popover-foreground: #2f2f2f;
 
-  --primary: #7B3F00;
-  --primary-foreground: #F5E6D3;
+  --primary: #7b3f00;
+  --primary-foreground: #f5e6d3;
 
-  --secondary: #C49E68;
-  --secondary-foreground: #2F2F2F;
+  --secondary: #c49e68;
+  --secondary-foreground: #2f2f2f;
 
-  --muted: #5B4636;
-  --muted-foreground: #EDE0C8;
+  --muted: #5b4636;
+  --muted-foreground: #ede0c8;
 
-  --accent: #D4A574;
-  --accent-foreground: #2F2F2F;
+  --accent: #d4a574;
+  --accent-foreground: #2f2f2f;
 
-  --border: #C49E68;
-  --input: #EDE0C8;
-  --ring: #7B3F00;
+  --border: #c49e68;
+  --input: #ede0c8;
+  --ring: #7b3f00;
 
   --radius: 0.5rem;
 }

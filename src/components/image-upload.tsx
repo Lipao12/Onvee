@@ -21,12 +21,12 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
-    currentImageUrl || null
+    currentImageUrl || null,
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -68,7 +68,7 @@ export function ImageUpload({
           upsert: true,
         });
 
-        console.log(uploadData)
+      console.log(uploadData);
 
       if (uploadError) throw uploadError;
 

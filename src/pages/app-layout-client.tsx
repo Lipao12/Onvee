@@ -29,11 +29,11 @@ export default function AppLayout() {
 
   const isHomePage = location.pathname === "/home";
   const isOnboardingPage = location.pathname === "/barber/onboarding";
-  
+
   return (
     <div className="flex min-h-screen bg-background">
       {!isMobile && <Sidebar />}
-      
+
       <div
         className={`flex-1 flex flex-col ${
           isOnboardingPage ? "" : isMobile ? "pt-16" : ""

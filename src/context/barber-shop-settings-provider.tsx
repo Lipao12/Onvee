@@ -13,7 +13,7 @@ export function useBarbershopSettings() {
         ...(mainColor && { main_color: mainColor }),
       });
     },
-    [updateBarbershopConfig]
+    [updateBarbershopConfig],
   );
 
   // Função para atualizar redes sociais
@@ -24,7 +24,7 @@ export function useBarbershopSettings() {
         whatsapp_number: whatsappNumber,
       });
     },
-    [updateBarbershopConfig]
+    [updateBarbershopConfig],
   );
 
   // Função para atualizar configurações de agendamento
@@ -34,7 +34,7 @@ export function useBarbershopSettings() {
         appointment_interval: appointmentInterval,
       });
     },
-    [updateBarbershopConfig]
+    [updateBarbershopConfig],
   );
 
   return {

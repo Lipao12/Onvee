@@ -33,7 +33,7 @@ interface OnboardingContextType {
 }
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function OnboardingProvider({ children }: { children: ReactNode }) {
